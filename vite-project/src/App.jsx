@@ -31,11 +31,6 @@ function App() {
             element={<ProtectedRoute element={<UploadCourse />} allowedRoles={["admin"]} />}
           />
 
-          <Route
-            path="/upload-course"
-            element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />}
-          />
-
 
           {/* Facilitator-only route */}
           <Route

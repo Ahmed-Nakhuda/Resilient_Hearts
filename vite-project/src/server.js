@@ -4,6 +4,8 @@ import mysql from 'mysql2/promise';
 import cors from "cors";
 import bcrypt from 'bcrypt';
 import session from 'express-session';
+import multer from 'multer';
+import path from 'path';
 
 
 // Create an Express application
@@ -15,9 +17,23 @@ app.use(express.json());
 
 // Configure CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow requests only from your frontend
+  origin: ['http://localhost:5173', 'http://localhost:5173'], // Allow requests only from your frontend
   credentials: true, // Allow cookies and session to be sent
 }));
+
+
+// Configure Multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Store files in the 'uploads' directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Use a unique filename
+  },
+});
+
+const upload = multer({ storage });
+
 
 app.use(session({
   secret: 'your-secret-key', 
@@ -107,6 +123,73 @@ app.get("/check-session", (req, res) => {
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
+});
+
+
+// route to upload a course
+app.post('/upload-course', async (req, res) => {
+  const { title, description, price } = req.body;
+
+  if (!title || !description || !price) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+    const [result] = await db.execute(
+      'INSERT INTO courses (title, description, price) VALUES (?, ?, ?)',
+      [title, description, price]
+    );
+
+    res.status(201).json({ message: 'Course uploaded successfully', courseId: result.insertId });
+  } catch (err) {
+    res.status(500).json({ message: 'Error uploading course', error: err.message });
+    console.log(err);
+  }
+});
+
+
+// Route to fetch all courses
+app.get('/view-courses', async (req, res) => {
+  try {
+    const [courses] = await db.execute('SELECT * FROM courses');
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching courses', error: err.message });
+    console.log(err);
+  }
+});
+
+
+
+// Course content upload endpoint
+app.post('/upload-content', upload.array('content[]'), (req, res) => {
+  const { course_id } = req.body;
+  const files = req.files; // Multer stores uploaded files in req.files
+
+  const stepNumbers = req.body.step_number; // Array of step numbers
+  const contentTypes = req.body.content_type; // Array of content types
+
+  if (!course_id || files.length === 0 || !stepNumbers || !contentTypes) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  // Insert each file into the 'course_content' table
+  files.forEach((file, index) => {
+    const { filename, path: filePath } = file;
+    const contentType = contentTypes[index];
+    const stepNumber = stepNumbers[index];
+
+    const query = 'INSERT INTO course_content (course_id, content_type, content_url, step_number) VALUES (?, ?, ?, ?)';
+    
+    db.query(query, [course_id, contentType, filePath, stepNumber], (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Error uploading content' });
+      }
+    });
+  });
+
+  res.json({ message: 'Content uploaded successfully' });
 });
 
 
