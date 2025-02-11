@@ -29,8 +29,6 @@ const AdminDashboard = () => {
     <>
       <h1>Admin Dashboard</h1>
       <Link to="/upload-course">Upload Course</Link>
-      <br />
-      <Link to="upload-course-content">Upload Course Content</Link>
     </>
   );
 };
