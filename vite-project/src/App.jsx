@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
 import Signup from './components/signup'
@@ -7,6 +6,9 @@ import AdminDashboard from './components/adminDashboard'
 import ProtectedRoute from './components/protectedRoute'
 import FacilitatorDashboard from './components/facilitatorDashboard'
 import UploadCourse from './components/uploadCourse'
+import CourseContent from './components/courseContent'
+import Payment from './components/payment'
+import UserCourses from './components/userCourses'
 import './App.css'
 
 function App() {
@@ -15,9 +17,15 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
           <Route path='/signup' element={<Signup />}></Route>
-          <Route path='/home' element={<Home />}></Route>
+          <Route path='/login' element={<Login />}></Route>
+          <Route path='/payment' element={<Payment />}></Route>
+          <Route path='/user-courses' element={<UserCourses />}></Route>
+
+          {/* Pass id's */}
+          <Route path="user-courses/course-content/:courseId" element={<CourseContent />} />
+          <Route path="/payment/:courseId" element={<Payment />} />
 
 
           {/* Admin-only route */}

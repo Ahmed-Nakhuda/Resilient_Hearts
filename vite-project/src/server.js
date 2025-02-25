@@ -14,12 +14,16 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-
-// Configure CORS
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5173'], // Allow requests only from your frontend
-  credentials: true, // Allow cookies and session to be sent
+  origin: "http://localhost:5173",
+  credentials: true,  // Allow credentials (cookies/session)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
 }));
+
+
+const __dirname = path.resolve(); // Ensure correct path resolution
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve the uploads folder
 
 
 // Configure Multer storage
@@ -36,15 +40,14 @@ const upload = multer({ storage });
 
 
 app.use(session({
-  secret: 'your-secret-key', 
+  secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // Set secure to true in production when using HTTPS
-})); 
+}));
 
 // MySQL database connection 
 const db = await mysql.createConnection({
-  // Load from .env file
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -77,7 +80,6 @@ app.post('/create-user', async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user into the table users
     const [result] = await db.execute(
       'INSERT INTO users (first_name, last_name, email, password, age, special_needs, hope_to_learn, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [firstName, lastName, email, hashedPassword, age, specialNeeds, hopeToLearn, role]
@@ -107,7 +109,7 @@ app.post('/login', async (req, res) => {
 
     const user = users[0];
     if (await bcrypt.compare(password, user.password)) {
-      req.session.user = { id: user.id, role: user.role }; // Store user data in session
+      req.session.user = { id: user.user_id, role: user.role }; // Store user data in session
       res.json({ message: 'Login successful' });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
@@ -119,25 +121,37 @@ app.post('/login', async (req, res) => {
 
 app.get("/check-session", (req, res) => {
   if (req.session.user) {
-    res.json({ role: req.session.user.role });
+    res.json({ user_id: req.session.user.id, role: req.session.user.role });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
 });
 
 
-// route to upload a course
-app.post('/upload-course', async (req, res) => {
-  const { title, description, price } = req.body;
 
-  if (!title || !description || !price) {
+// route to get user details
+app.get('/user', (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'Not logged in' });
+  }
+  res.json(req.session.user); // Returns { id: user.id, role: user.role }
+});
+
+
+
+// Route to upload a course with an image
+app.post('/upload-course', upload.single('image'), async (req, res) => {
+  const { title, description, price } = req.body;
+  const image = req.file; // Multer makes the file available as req.file
+
+  if (!title || !description || !price || !image) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
     const [result] = await db.execute(
-      'INSERT INTO courses (title, description, price) VALUES (?, ?, ?)',
-      [title, description, price]
+      'INSERT INTO courses (title, description, price, image) VALUES (?, ?, ?, ?)',
+      [title, description, price, image.path]
     );
 
     res.status(201).json({ message: 'Course uploaded successfully', courseId: result.insertId });
@@ -149,7 +163,7 @@ app.post('/upload-course', async (req, res) => {
 
 
 // Route to fetch all courses
-app.get('/view-courses', async (req, res) => {
+app.get('/view-course', async (req, res) => {
   try {
     const [courses] = await db.execute('SELECT * FROM courses');
     res.json(courses);
@@ -158,6 +172,59 @@ app.get('/view-courses', async (req, res) => {
     console.log(err);
   }
 });
+
+
+// Route to fetch course by ID
+app.get('/view-course/:courseId', async (req, res) => {
+  const { courseId } = req.params;
+  try {
+    const [course] = await db.execute('SELECT * FROM courses WHERE course_id = ?', [courseId]);
+    res.json(course);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching course', error: err.message });
+    console.log(err);
+  }
+});
+
+
+
+// Route to fetch course content by course ID
+app.get('/view-course-content/:courseId', async (req, res) => {
+  const { courseId } = req.params;
+
+  if (!courseId) {
+    return res.status(400).json({ message: 'Course ID is required' });
+  }
+
+  try {
+    const [content] = await db.execute('SELECT * FROM course_content WHERE course_id = ?', [courseId]);
+    res.json(content);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching course content', error: err.message });
+    console.log(err);
+  }
+});
+
+
+
+// payment page for specific course
+app.get('/payment/:courseId', async (req, res) => {
+  const { courseId } = req.params;
+
+  if (!courseId) {
+    return res.status(400).json({ message: 'Course ID is required' });
+  }
+
+  try {
+    const [course] = await db.execute('SELECT * FROM courses WHERE id = ?', [courseId]);
+    res.json(course);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching course', error: err.message });
+    console.log(err);
+  }
+}
+);
+
 
 
 
@@ -180,7 +247,7 @@ app.post('/upload-content', upload.array('content[]'), (req, res) => {
     const stepNumber = stepNumbers[index];
 
     const query = 'INSERT INTO course_content (course_id, content_type, content_url, step_number) VALUES (?, ?, ?, ?)';
-    
+
     db.query(query, [course_id, contentType, filePath, stepNumber], (err, result) => {
       if (err) {
         console.log(err);
@@ -190,6 +257,64 @@ app.post('/upload-content', upload.array('content[]'), (req, res) => {
   });
 
   res.json({ message: 'Content uploaded successfully' });
+});
+
+
+// Route to enroll a user in a course
+app.post("/enroll", async (req, res) => {
+  const { user_id, course_id } = req.body;
+  if (!user_id || !course_id) {
+    return res.status(400).json({ error: "user_id and course_id are required" });
+  }
+
+  try {
+    // Check if the user is already enrolled
+    const [existingEnrollment] = await db.execute(
+      "SELECT 1 FROM user_courses WHERE user_id = ? AND course_id = ?",
+      [user_id, course_id]
+    );
+
+    if (existingEnrollment.length > 0) {
+      return res.status(400).json({ error: "User is already enrolled in this course" });
+    }
+
+    // If not enrolled, proceed with insertion
+    const [result] = await db.execute(
+      "INSERT INTO user_courses (user_id, course_id, completed) VALUES (?, ?, FALSE)",
+      [user_id, course_id]
+    );
+
+    console.log("User enrolled, enrollment ID:", result.insertId);
+    res.status(201).json({ message: "User enrolled successfully", enrollment_id: result.insertId });
+
+  } catch (err) {
+    console.error("Error enrolling user:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+// Route to fetch courses for a user
+app.get("/user-courses", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const user_id = req.session.user.id;
+  console.log("Fetching courses for user_id:", user_id);
+
+  try {
+    const [results] = await db.execute(`
+            SELECT uc.user_course_id, uc.course_id, uc.enrolled_at, uc.completed, c.title
+            FROM user_courses uc
+            JOIN courses c ON uc.course_id = c.course_id
+            WHERE uc.user_id = ?`, [user_id]);
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching user courses:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 

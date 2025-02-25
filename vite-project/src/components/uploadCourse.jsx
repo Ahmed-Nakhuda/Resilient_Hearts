@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
-  Container,
-  Typography,
-  TextField,
+  Container,Typography,TextField,
   Button,
   Box,
   Grid,
@@ -19,6 +17,7 @@ const UploadCourse = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [image, setImage] = useState(null); // new image state
   const [contentFiles, setContentFiles] = useState([]);
   const [contentTypes, setContentTypes] = useState([]);
   const [stepNumbers, setStepNumbers] = useState([]);
@@ -32,20 +31,27 @@ const UploadCourse = () => {
     setError('');
     setSuccess('');
 
+    // Use FormData to send course data and image file
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("image", image); // include the image file
+
     try {
       const response = await axios.post(
         "http://localhost:3001/upload-course",
-        { title, description, price },
+        formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       setSuccess(response.data.message);
       const courseId = response.data.courseId;
       handleContentSubmit(courseId);
     } catch (err) {
-      setError(err.response?.data?.message || "Error");
+      setError(err.response?.data?.message || "Error uploading course");
     }
   };
 
@@ -135,6 +141,26 @@ const UploadCourse = () => {
             onChange={(e) => setPrice(e.target.value)}
             required
           />
+        </Box>
+
+        {/* Image Upload Input */}
+        <Box mb={2}>
+          <Button
+            variant="contained"
+            component="label"
+            color="primary"
+          >
+            Select Course Image
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              hidden
+              required
+            />
+          </Button>
+          {/* display the name of the image uploaded */}
+          {image && <Typography variant="body2">{image.name}</Typography>}
         </Box>
 
         <Typography variant="h6" gutterBottom>
