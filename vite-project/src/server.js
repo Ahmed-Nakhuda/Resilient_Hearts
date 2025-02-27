@@ -85,7 +85,7 @@ app.post('/create-user', async (req, res) => {
       [firstName, lastName, email, hashedPassword, age, specialNeeds, hopeToLearn, role]
     );
 
-    res.status(201).json({ message: 'User created successfully', userId: result.insertId });
+    res.status(201).json({ message: 'Account created successfully', userId: result.insertId });
   } catch (err) {
     res.status(500).json({ message: 'Error creating user', error: err.message });
     console.log(err);
@@ -228,15 +228,15 @@ app.get('/payment/:courseId', async (req, res) => {
 
 
 
-// Course content upload endpoint
 app.post('/upload-content', upload.array('content[]'), (req, res) => {
   const { course_id } = req.body;
   const files = req.files; // Multer stores uploaded files in req.files
 
   const stepNumbers = req.body.step_number; // Array of step numbers
   const contentTypes = req.body.content_type; // Array of content types
+  const contentDescriptions = req.body.content_description; // Array of content descriptions
 
-  if (!course_id || files.length === 0 || !stepNumbers || !contentTypes) {
+  if (!course_id || files.length === 0 || !stepNumbers || !contentTypes || !contentDescriptions) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -245,10 +245,11 @@ app.post('/upload-content', upload.array('content[]'), (req, res) => {
     const { filename, path: filePath } = file;
     const contentType = contentTypes[index];
     const stepNumber = stepNumbers[index];
+    const contentDescription = contentDescriptions[index]; // Get the corresponding description for each file
 
-    const query = 'INSERT INTO course_content (course_id, content_type, content_url, step_number) VALUES (?, ?, ?, ?)';
+    const query = 'INSERT INTO course_content (course_id, content_type, content_url, step_number, content_description) VALUES (?, ?, ?, ?, ?)';
 
-    db.query(query, [course_id, contentType, filePath, stepNumber], (err, result) => {
+    db.query(query, [course_id, contentType, filePath, stepNumber, contentDescription], (err, result) => {
       if (err) {
         console.log(err);
         return res.status(500).json({ message: 'Error uploading content' });

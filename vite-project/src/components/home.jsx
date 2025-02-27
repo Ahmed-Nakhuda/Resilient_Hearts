@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Container, Typography, Grid, Card, CardContent, Button, CircularProgress, Alert } from '@mui/material';
+import { Container, Typography, Grid, Card, CardContent, Button, CircularProgress, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import "../stylesheets/home.css";
+import Navbar from './Navbar';
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -8,26 +10,6 @@ const Home = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const pages = ['Products', 'Pricing', 'Blog'];
-  const settings = ['Login', 'Profile', 'Logout'];
-
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   // Fetch courses (example fetch function)
   useEffect(() => {
@@ -53,13 +35,7 @@ const Home = () => {
 
   return (
     <>
-      <nav>
-        <ul>
-          <li><a href="/login">Login</a></li>
-          <li><a href="/user-courses">My Courses</a></li>
-        </ul>
-      </nav>
-
+      <Navbar />
       {/* Main Content */}
       <Container maxWidth="md" sx={{ mt: 3 }}>
         <Typography variant="h4" gutterBottom align="center">

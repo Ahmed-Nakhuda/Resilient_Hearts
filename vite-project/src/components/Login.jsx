@@ -34,11 +34,11 @@ const Login = () => {
       axios.get("http://localhost:3001/check-session", { withCredentials: true }) 
         .then((res) => {
           if (res.data.role === "admin") {
-            navigate("/admin-dashboard");
+            navigate("/");
           } else if(res.data.role === "user") {
             navigate("/");
           } else if(res.data.role === "facilitator") {
-            navigate("/facilitator-dashboard");
+            navigate("/");
           }
         })
         .catch(() => {

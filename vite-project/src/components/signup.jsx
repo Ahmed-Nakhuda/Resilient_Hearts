@@ -54,7 +54,7 @@ const SignUp = () => {
       setSuccess(response.data.message);
       navigate("/home");
     } catch (err) {
-      setError(err.response ? err.response.data.message : "An error occurred");
+      console.log(err);
     }
   };
 
@@ -158,7 +158,7 @@ const SignUp = () => {
         </form>
         <Typography variant="body2" display="flex" alignItems="center" justifyContent="center" marginTop={2}>
           <span>Already have an account?</span>
-          <Link to="/" style={{ marginLeft: 8, }}>
+          <Link to="/login" style={{ marginLeft: 8, }}>
             Login
           </Link>
         </Typography>
