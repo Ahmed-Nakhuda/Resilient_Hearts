@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, CircularProgress, Alert, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import "../stylesheets/course-content.css"; 
 import Navbar from './Navbar';
+
 
 const CourseContent = () => {
     const { courseId } = useParams();
@@ -18,7 +18,7 @@ const CourseContent = () => {
             try {
                 const response = await axios.get(`http://localhost:3001/view-course-content/${courseId}`);
                 console.log('API Response:', response.data);
-    
+
                 if (response.data && response.data.length > 0) {
                     // Sort by step_number before setting state
                     const sortedContent = response.data.sort((a, b) => a.step_number - b.step_number);
@@ -34,10 +34,10 @@ const CourseContent = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchCourseDetails();
     }, [courseId]);
-    
+
 
     // Function to handle selecting content
     const handleContentClick = (item) => {
@@ -51,7 +51,7 @@ const CourseContent = () => {
                 <div style={{ width: '30%' }}>
                     {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
                     {error && <Alert severity="error">{error}</Alert>}
-    
+
                     {content.length > 0 && (
                         <Accordion expanded={true}>
                             <AccordionSummary
@@ -61,7 +61,7 @@ const CourseContent = () => {
                             >
                                 <Typography>Content</Typography>
                             </AccordionSummary>
-    
+
                             <AccordionDetails sx={{ display: 'block' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     {content.map((item) => (
@@ -88,35 +88,37 @@ const CourseContent = () => {
                         </Accordion>
                     )}
                 </div>
-    
+
                 {/* Right: Main Content Display */}
                 <div style={{ flex: 1 }}>
                     {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
                     {error && <Alert severity="error">{error}</Alert>}
-    
+
                     {selectedContent && (
                         <>
                             {selectedContent.content_type === 'video' && (
                                 <video width="100%" controls>
-                                    <source src={`http://localhost:3001/${selectedContent.content_url.replace(/\\/g, '/')}`} type="video/mp4" />
+                                    <source src={selectedContent.content_url} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
                             )}
-    
+
                             {selectedContent.content_type === 'pdf' && (
                                 <iframe
-                                    src={`http://localhost:3001/${selectedContent.content_url.replace(/\\/g, '/')}`}
+                                    src={`${selectedContent.content_url}?fl_attachment`} // Forces direct download
                                     width="100%"
                                     height="600px"
                                     title={`PDF Viewer - ${selectedContent.content_id}`}
                                 />
                             )}
+
+
                         </>
                     )}
                 </div>
             </div>
         </>
     );
-}    
+}
 
 export default CourseContent;

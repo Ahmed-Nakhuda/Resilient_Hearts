@@ -39,6 +39,8 @@ const Login = () => {
             navigate("/");
           } else if(res.data.role === "facilitator") {
             navigate("/");
+          } else if(res.data.role === "enrolled") {
+            navigate("/");
           }
         })
         .catch(() => {

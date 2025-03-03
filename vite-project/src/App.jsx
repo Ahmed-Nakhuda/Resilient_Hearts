@@ -9,6 +9,9 @@ import UploadCourse from './components/uploadCourse'
 import CourseContent from './components/courseContent'
 import Payment from './components/payment'
 import UserCourses from './components/userCourses'
+import StressManagement from './components/stressManagement'
+import MyCommunity from './components/myCommunity'
+import UserProfile from './components/userProfile'
 import './App.css'
 
 function App() {
@@ -22,10 +25,13 @@ function App() {
           <Route path='/login' element={<Login />}></Route>
           <Route path='/payment' element={<Payment />}></Route>
           <Route path='/user-courses' element={<UserCourses />}></Route>
+          <Route path='/user-profile' element={<UserProfile />}></Route>
+          
 
           {/* Pass id's */}
           <Route path="user-courses/course-content/:courseId" element={<CourseContent />} />
           <Route path="/payment/:courseId" element={<Payment />} />
+          <Route path='/stress-management-and-healthy-coping/:courseId' element={<StressManagement />}></Route>
 
 
           {/* Admin-only route */}
@@ -45,6 +51,14 @@ function App() {
             path="/facilitator-dashboard"
             element={<ProtectedRoute element={<FacilitatorDashboard />} allowedRoles={["facilitator"]} />}
           />
+
+
+          {/* Enrolled user-only route */}
+          <Route
+            path="/my-community"
+            element={<ProtectedRoute element={<MyCommunity />} allowedRoles={["enrolled"]} />}
+          />
+
 
         </Routes>
       </Router>

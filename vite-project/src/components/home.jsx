@@ -11,7 +11,7 @@ const Home = () => {
   const navigate = useNavigate();
 
 
-  // Fetch courses (example fetch function)
+  // Fetch courses 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -28,10 +28,11 @@ const Home = () => {
     fetchCourses();
   }, []);
 
-  // Navigate to payment page
-  const navigateToPayment = (courseId) => {
-    navigate(`/payment/${courseId}`);
-  };
+
+
+  const navigateToViewCourseDetails = (courseId) => {
+    navigate(`/stress-management-and-healthy-coping/${courseId}`);
+  }
 
   return (
     <>
@@ -53,10 +54,11 @@ const Home = () => {
                 <Card sx={{ boxShadow: 3, borderRadius: 2, p: 2 }}>
                   <CardContent>
                     <img
-                      src={`http://localhost:3001/${course.image.replace(/\\/g, '/')}`}
+                      src={course.image}  // Use the Cloudinary URL directly
                       alt={course.title}
                       style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 2 }}
                     />
+
                     <Typography variant="h6" gutterBottom>
                       {course.title}
                     </Typography>
@@ -67,7 +69,7 @@ const Home = () => {
                       ${course.price}
                     </Typography>
                     <Button
-                      onClick={() => navigateToPayment(course.course_id)}
+                      onClick={() => navigateToViewCourseDetails(course.course_id)}
                       variant="contained"
                       color="primary"
                       sx={{ mt: 2 }}
