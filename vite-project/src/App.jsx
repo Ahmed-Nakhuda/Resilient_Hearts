@@ -26,6 +26,7 @@ function App() {
           <Route path='/payment' element={<Payment />}></Route>
           <Route path='/user-courses' element={<UserCourses />}></Route>
           <Route path='/user-profile' element={<UserProfile />}></Route>
+          <Route path='/my-community' element={<MyCommunity />}></Route>  
           
 
           {/* Pass id's */}

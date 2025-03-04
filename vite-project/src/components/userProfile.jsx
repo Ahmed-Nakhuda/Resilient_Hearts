@@ -21,7 +21,7 @@ const UserProfile = () => {
             } catch (err) {
                 console.error("Session error:", err);
                 setError("You must be logged in to upload a profile picture.");
-                navigate('/login'); // Redirect to login page if not authenticated
+                navigate('/login'); 
             }
         };
 
