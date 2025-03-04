@@ -32,6 +32,22 @@ const UserCourses = () => {
         fetchUserCourses();
     }, []);
 
+    const handleRemoveCourse = async (userCourseId) => {
+        try {
+            const response = await axios.delete(`http://localhost:3001/remove-course/${userCourseId}`, {
+                withCredentials: true
+            });
+
+            if (response.status === 200) {
+                // Remove the course from the local state
+                setCourses(courses.filter(course => course.user_course_id !== userCourseId));
+            }
+        } catch (err) {
+            console.error("Error removing course:", err);
+            setError("An error occurred while removing the course.");
+        }
+    };
+
 
     return (
         <>
@@ -47,9 +63,16 @@ const UserCourses = () => {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => navigate(`course-content/${course.course_id}`)}
+                                    onClick={() => navigate(`course-content/${course.course_id}`)} sx={{ mr: 2 }}
                                 >
                                     View Course
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => handleRemoveCourse(course.user_course_id)}
+                                >
+                                    Remove Course
                                 </Button>
                             </CardContent>
                         </Card>
