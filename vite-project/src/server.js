@@ -32,8 +32,14 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
+    let folderName = "course_content"; // Default folder for course content
+
+    if (req.path === "/upload-profile-picture") {
+      folderName = "profile_pictures"; // Profile pictures go in "profile_pictures"
+    }
+    
     return {
-      folder: "course_content", // Store files in "course_content" folder
+      folder: folderName,
       format: file.mimetype.split("/")[1], // Extract file extension dynamically
       resource_type: file.mimetype === "application/pdf" ? "raw" : "auto", // Treat PDFs as "raw"
     };
@@ -63,7 +69,7 @@ db.connect()
   .then(() => console.log('Connected to MySQL database'))
   .catch((err) => console.error('Error connecting to database:', err));
 
-  
+
 // Route to create a user
 app.post('/create-user', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, age, specialNeeds, hopeToLearn, role = 'user' } = req.body;
@@ -206,8 +212,8 @@ app.get('/payment/:courseId', async (req, res) => {
 });
 
 app.post('/upload-content', upload.array('content[]'), (req, res) => {
-  console.log("Incoming request body:", JSON.stringify(req.body, null, 2)); 
-  console.log("Uploaded files:", JSON.stringify(req.files, null, 2)); 
+  console.log("Incoming request body:", JSON.stringify(req.body, null, 2));
+  console.log("Uploaded files:", JSON.stringify(req.files, null, 2));
 
   const { course_id } = req.body;
   const files = req.files;
@@ -220,7 +226,7 @@ app.post('/upload-content', upload.array('content[]'), (req, res) => {
   }
 
   files.forEach((file, index) => {
-    console.log("Processing file:", JSON.stringify(file, null, 2));  
+    console.log("Processing file:", JSON.stringify(file, null, 2));
 
     const fileUrl = file.path;
     const contentType = contentTypes[index];
@@ -286,6 +292,48 @@ app.get("/user-courses", async (req, res) => {
   } catch (err) {
     console.error("Error fetching user courses:", err);
     res.status(500).json({ error: "Database error" });
+  }
+});
+
+// upload user profile picture
+app.post("/upload-profile-picture", upload.single('profilePicture'), async (req, res) => {
+  const { user_id } = req.body;
+  const profilePicture = req.file;
+
+  if (!user_id || !profilePicture) {
+    return res.status(400).json({ message: 'User ID and profile picture are required' });
+  }
+
+  try {
+    const imageUrl = profilePicture.path || profilePicture.secure_url; // Cloudinary URL or local path
+
+    const [result] = await db.execute(
+      'UPDATE users SET profile_picture = ? WHERE user_id = ?', // Ensure `id` is correct in your database schema
+      [imageUrl, user_id]
+    );
+
+    res.status(201).json({ message: 'Profile picture uploaded successfully', imageUrl });
+  } catch (err) {
+    res.status(500).json({ message: 'Error uploading profile picture', error: err.message });
+    console.log(err);
+  }
+});
+
+
+// Route to fetch user profile information, including profile picture
+app.get("/user/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+      const [user] = await db.execute('SELECT profile_picture FROM users WHERE user_id = ?', [user_id]);
+      if (user.length > 0) {
+          res.json({ profile_picture: user[0].profile_picture });
+          console.log("Profile picture sent:", user[0].profile_picture);
+      } else {
+          res.status(404).json({ message: "User not found" });
+      }
+  } catch (err) {
+      res.status(500).json({ message: "Error fetching user profile", error: err.message });
   }
 });
 
