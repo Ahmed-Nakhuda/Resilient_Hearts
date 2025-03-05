@@ -276,7 +276,6 @@ app.post("/enroll", async (req, res) => {
   }
 });
 
-
 // Route to fetch courses for a user
 app.get("/user-courses", async (req, res) => {
   if (!req.session.user) {
@@ -296,6 +295,33 @@ app.get("/user-courses", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
+
+
+// Remove a course from a user's account
+app.delete("/remove-course/:userCourseId", async (req, res) => {
+  const { userCourseId } = req.params;
+
+  if (!userCourseId) {
+    return res.status(400).json({ error: "userCourseId is required" });
+  }
+
+  try {
+    const [result] = await db.execute(
+      "DELETE FROM user_courses WHERE user_course_id = ?",
+      [userCourseId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Course not found in user's account" });
+    }
+
+    res.status(200).json({ message: "Course removed successfully" });
+  } catch (err) {
+    console.error("Error removing course:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 
 
 // Upload user profile picture
