@@ -45,7 +45,8 @@ const Payment = () => {
             });
 
             console.log("Enrollment successful:", response.data);
-            navigate("/user-courses");
+
+            navigate("/user-courses")
 
 
         } catch (error) {

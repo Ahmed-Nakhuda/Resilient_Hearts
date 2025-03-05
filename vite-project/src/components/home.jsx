@@ -54,7 +54,7 @@ const Home = () => {
                 <Card sx={{ boxShadow: 3, borderRadius: 2, p: 2 }}>
                   <CardContent>
                     <img
-                      src={course.image}  // Use the Cloudinary URL directly
+                      //src={course.image}  // Cloudinary URL
                       alt={course.title}
                       style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 2 }}
                     />

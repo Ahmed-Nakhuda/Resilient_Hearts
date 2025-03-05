@@ -70,6 +70,8 @@ db.connect()
   .catch((err) => console.error('Error connecting to database:', err));
 
 
+
+
 // Route to create a user
 app.post('/create-user', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, age, specialNeeds, hopeToLearn, role = 'user' } = req.body;
@@ -294,6 +296,7 @@ app.get("/user-courses", async (req, res) => {
   }
 });
 
+
 // Remove a course from a user's account
 app.delete("/remove-course/:userCourseId", async (req, res) => {
   const { userCourseId } = req.params;
@@ -319,7 +322,9 @@ app.delete("/remove-course/:userCourseId", async (req, res) => {
   }
 });
 
-// upload user profile picture
+
+
+// Upload user profile picture
 app.post("/upload-profile-picture", upload.single('profilePicture'), async (req, res) => {
   const { user_id } = req.body;
   const profilePicture = req.file;
@@ -329,10 +334,10 @@ app.post("/upload-profile-picture", upload.single('profilePicture'), async (req,
   }
 
   try {
-    const imageUrl = profilePicture.path || profilePicture.secure_url; // Cloudinary URL or local path
+    const imageUrl = profilePicture.path || profilePicture.secure_url; 
 
     const [result] = await db.execute(
-      'UPDATE users SET profile_picture = ? WHERE user_id = ?', // Ensure `id` is correct in your database schema
+      'UPDATE users SET profile_picture = ? WHERE user_id = ?', 
       [imageUrl, user_id]
     );
 
@@ -358,6 +363,100 @@ app.get("/user/:user_id", async (req, res) => {
       }
   } catch (err) {
       res.status(500).json({ message: "Error fetching user profile", error: err.message });
+  }
+});
+
+
+app.post("/create-post", async (req, res) => {
+  const { user_id, post_description } = req.body;
+
+  if (!user_id || !post_description) {
+      return res.status(400).json({ message: "User ID and post description are required" });
+  }
+
+  try {
+      const [result] = await db.execute(
+          "INSERT INTO posts (user_id, post_description) VALUES (?, ?)",
+          [user_id, post_description]
+      );
+
+      res.status(201).json({ message: "Post created successfully", post_id: result.insertId });
+  } catch (err) {
+      console.error("Error creating post:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
+  }
+});
+
+
+app.get("/posts", async (req, res) => {
+  try {
+      const [posts] = await db.execute(`
+          SELECT p.post_id, p.post_description, p.likes, p.created_at,
+                 u.first_name, u.last_name, u.profile_picture
+          FROM posts p
+          JOIN users u ON p.user_id = u.user_id
+          ORDER BY p.created_at DESC
+      `);
+
+      res.json(posts);
+  } catch (err) {
+      console.error("Error fetching posts:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
+  }
+});
+
+
+app.post("/like-post", async (req, res) => {
+  const { user_id, post_id } = req.body;
+
+  if (!user_id || !post_id) {
+      return res.status(400).json({ message: "User ID and Post ID are required" });
+  }
+
+  try {
+      // Check if the user has already liked the post
+      const [existingLike] = await db.execute(
+          "SELECT * FROM post_likes WHERE user_id = ? AND post_id = ?",
+          [user_id, post_id]
+      );
+
+      if (existingLike.length > 0) {
+          return res.status(400).json({ message: "You have already liked this post" });
+      }
+
+      // Insert the like
+      await db.execute(
+          "INSERT INTO post_likes (user_id, post_id) VALUES (?, ?)",
+          [user_id, post_id]
+      );
+
+      // Increment the like count in posts table
+      await db.execute(
+          "UPDATE posts SET likes = likes + 1 WHERE post_id = ?",
+          [post_id]
+      );
+
+      res.json({ message: "Post liked successfully" });
+  } catch (err) {
+      console.error("Error liking post:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
+  }
+});
+
+
+app.get("/liked-posts/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+      const [likedPosts] = await db.execute(
+          "SELECT post_id FROM post_likes WHERE user_id = ?",
+          [user_id]
+      );
+
+      res.json(likedPosts);
+  } catch (err) {
+      console.error("Error fetching liked posts:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
   }
 });
 
