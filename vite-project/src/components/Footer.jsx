@@ -105,7 +105,7 @@ const Footer = () => {
             </Typography>
             <Box component="form" sx={{ mt: 2 }}>
               <TextField
-                placeholder="Enter your email here*"
+                placeholder="Enter your email here"
                 variant="outlined"
                 size="small"
                 fullWidth
