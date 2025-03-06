@@ -47,13 +47,20 @@ const Navbar = () => {
         <nav>
             <ul>
                 <div className="nav-left">
-                    <li><a href="/login">Login</a></li>
-                    <li><a href='/'>Home</a></li>
-                    <li><a href="/user-courses">My Courses</a></li>
-                    {isAdmin && <li><a href="/upload-course">Upload Course</a></li>}
+                    <li><a href='/'>
+                        <img src="../src/assets/icon.png"
+                            width={50} 
+                            height={50}
+                            alt="Home"
+                            className="icon">
+                        </img>
+                    </a></li>
+                    <li><a href="/login" className="nav-button">Login</a></li>
+                    <li><a href="/user-courses" className="nav-button">My Courses</a></li>
+                    {isAdmin && <li><a href="/upload-course" className="nav-button">Upload Course</a></li>}
 
                     {(isEnrolled || isAdmin || isFacilitator) && (
-                        <li><a href="/my-community">My Community</a></li>
+                        <li><a href="/my-community" className="nav-button">My Community</a></li>
                     )}
                 </div>
               
@@ -67,6 +74,7 @@ const Navbar = () => {
                                     height={50} 
                                     alt="Profile" 
                                     style={{ borderRadius: '50%' }} // Make it circular
+                                    className="profile-picture"
                                 />
                             </a>
                         </li>
