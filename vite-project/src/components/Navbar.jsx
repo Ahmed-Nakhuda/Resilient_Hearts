@@ -24,24 +24,24 @@ const Navbar = () => {
                     setIsFacilitator(true);
                 }
 
-                // Fetch the user's profile picture using user_id from the session
-                const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
+               // Fetch the user's profile picture using user_id from the session
+               // const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
                 
-                console.log("Profile Response:", profileResponse.data);  // Debugging line to check the profile picture data
+               // console.log("Profile Response:", profileResponse.data);  // Debugging line to check the profile picture data
 
-                if (profileResponse.data.profile_picture) {
-                    setProfilePicture(profileResponse.data.profile_picture);  // Set the profile picture URL
-                } else {
-                    console.log("No profile picture set, using default.");
-                    setProfilePicture('/images/avatar.png');  // Use default if not set
-                }
+                // if (profileResponse.data.profile_picture) {
+                //     setProfilePicture(profileResponse.data.profile_picture);  // Set the profile picture URL
+                // } else {
+                //     console.log("No profile picture set, using default.");
+                //     setProfilePicture('/images/avatar.png');  // Use default if not set
+                // }
             } catch (error) {
                 console.error("Error fetching user role or profile:", error);
             }
         };
 
         fetchUserRole();
-    }, []);  // Empty dependency array to run only once on component mount
+    }, []);  
 
     return (
         <nav>
