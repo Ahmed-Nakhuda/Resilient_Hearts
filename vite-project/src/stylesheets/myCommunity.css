@@ -1,0 +1,47 @@
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#bar {
+    background-color: lightgray; /* Light gray background */
+    padding: 10px;
+    border-radius: 10px;
+    width: 50%; /* Matches the width of the textarea */
+    display: flex;
+    justify-content: flex-end; /* Aligns button to the right */
+}
+
+#post-message-button {
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: #06ce0d;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#post-message-button:hover {
+    background-color: #05b80b;
+}
+
+#post-container {
+    display: flex;
+    flex-direction: column; /* Stack posts vertically */
+    align-items: center; /* Center posts horizontally */
+}
+
+#post-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500%; 
+}
+
+#post-card-header {
+    display: flex;
+    align-items: center;
+}
