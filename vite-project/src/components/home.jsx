@@ -104,15 +104,7 @@ const Home = () => {
                 >
                   <CardContent>
                     <img
-<<<<<<< HEAD
                       //src={course.image}  // Cloudinary URL
-=======
-<<<<<<< HEAD
-                      src={course.image}
-=======
-                      //src={course.image}  // Cloudinary URL
->>>>>>> 6c4a18b1140b0afd6d7dbddf9345ce9289797678
->>>>>>> 609a4eb70b49c14cec089bbdfb842f8eed4489bf
                       alt={course.title}
                       style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 2 }}
                     />
