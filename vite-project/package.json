@@ -13,10 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.5",
-<<<<<<< HEAD
     "@mui/joy": "^5.0.0-beta.51",
-=======
->>>>>>> 609a4eb70b49c14cec089bbdfb842f8eed4489bf
     "@mui/material": "^6.4.1",
     "@mui/styled-engine-sc": "^6.4.0",
     "axios": "^1.7.9",
