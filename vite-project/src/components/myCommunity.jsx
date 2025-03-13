@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Typography, Card, CardContent, Button, Box, TextField } from '@mui/material';
 import axios from "axios";
 import Navbar from "./Navbar";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
@@ -155,22 +156,22 @@ const Post = () => {
       <div>
         {/* Post Input Form */}
         <form onSubmit={handlePostSubmit}>
-          <div className="center">
-            <Textarea
+          <Box sx={{ margin: "1rem" }}>
+            <TextField
               value={postDescription}
               onChange={(e) => setPostDescription(e.target.value)}
               placeholder="Share your thoughts..."
-              minRows={5}
-              style={{ width: "50%", marginTop: "3%" }}
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              sx={{ marginBottom: "1rem" }}
             />
-          </div>
-
-          <div className="center">
-            <div id="bar">
-              <Button type="submit" id="post-message-button">POST TO COMMUNITY</Button>
-            </div>
-          </div>
-        </form>
+            <Button type="submit" variant="contained" color="primary">
+            Post
+            </Button>
+          </Box>
+        </form>        
 
         {/* Display Posts */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
