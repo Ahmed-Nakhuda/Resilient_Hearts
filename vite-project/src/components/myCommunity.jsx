@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Typography, Card, CardContent, Button, Box, TextField } from '@mui/material';
 import axios from "axios";
 import Navbar from "./Navbar";
 
@@ -87,37 +88,79 @@ const handleLike = async (postId) => {
       <div>
         {/* Post Input Form */}
         <form onSubmit={handlePostSubmit}>
-          <textarea
-            value={postDescription}
-            onChange={(e) => setPostDescription(e.target.value)}
-            placeholder="Share your thoughts..."
-            rows="3"
-            style={{ width: "100%" }}
-          />
-          <button type="submit">Post</button>
-        </form>
+          <Box sx={{ margin: "1rem" }}>
+            <TextField
+              value={postDescription}
+              onChange={(e) => setPostDescription(e.target.value)}
+              placeholder="Share your thoughts..."
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              sx={{ marginBottom: "1rem" }}
+            />
+            <Button type="submit" variant="contained" color="primary">
+            Post
+            </Button>
+          </Box>
+        </form>        
 
         {/* Display Posts */}
         <div>
           {posts.map((post) => (
-            <div key={post.post_id} style={{ border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
+            <><Card
+              key={post.id}
+              sx={{
+                boxShadow: 3,
+                borderRadius: 2,
+                p: 2,
+                flex: '0 0 auto',
+                margin: '0 1rem 1rem 1rem'
+              }}
+            >
+              <CardContent>
                 <img
-                  //src={post.profile_picture || "/images/avatar.png"}
-                  alt="Profile"
-                  width="40"
-                  height="40"
-                  style={{ borderRadius: "50%", marginRight: "10px" }}
-                />
-                <div>
-                  <strong>{post.first_name} {post.last_name}</strong>
-                  <p style={{ fontSize: "12px", color: "gray" }}>{new Date(post.created_at).toLocaleString()}</p>
-                </div>
-              </div>
-              <p>{post.post_description}</p>
-              <button>Like ({post.likes})</button>
-              <button>Reply</button>
-            </div>
+                    //src={post.profile_picture || "/images/avatar.png"}
+                    alt="Profile"
+                    width="40"
+                    height="40"
+                    style={{ borderRadius: "50%" }} />
+                <Box display="flex">
+                  <Typography variant="h6" gutterBottom>
+                    {post.first_name} {post.last_name}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginLeft: 2 }}>
+                    {new Date(post.created_at).toLocaleString()}
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  {post.post_description}
+                </Typography>
+                <Button
+                  onClick={() => {post.likes}}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    mt: 2,
+                    marginRight: '1rem',
+                  }}
+                >
+                  Like
+                </Button>
+                <Button
+                  //onClick={() => }
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    mt: 2,
+                    marginRight: '1rem',
+                  }}
+                >
+                  Reply
+                </Button>
+              </CardContent>
+            </Card>
+            </>
           ))}
         </div>
       </div>
