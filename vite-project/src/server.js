@@ -324,6 +324,34 @@ app.delete("/remove-course/:userCourseId", async (req, res) => {
 
 
 
+// Remove a course from the database
+app.delete("/delete-course/:courseId", async (req, res) => {
+  const { courseId } = req.params;
+
+  if (!courseId) {
+    return res.status(400).json({ error: "courseId is required" });
+  }
+
+  try {
+    const [result] = await db.execute(
+      "DELETE FROM courses WHERE course_id = ?",
+      [courseId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Course removed successfully" });
+  } catch (err) {
+    console.error("Error removing course:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+
 // Upload user profile picture
 app.post("/upload-profile-picture", upload.single('profilePicture'), async (req, res) => {
   const { user_id } = req.body;
@@ -460,6 +488,49 @@ app.get("/liked-posts/:user_id", async (req, res) => {
   }
 });
 
+
+// route to reply to a post 
+app.post("/reply-post", async (req, res) => {
+  const { user_id, post_id, reply_description } = req.body;
+
+  if (!user_id || !post_id || !reply_description) {
+      return res.status(400).json({ message: "User ID, Post ID, and Reply description are required" });
+  }
+
+  try {
+      const [result] = await db.execute(
+          "INSERT INTO post_replies (user_id, post_id, reply_description) VALUES (?, ?, ?)",
+          [user_id, post_id, reply_description]
+      );
+
+      res.status(201).json({ message: "Reply created successfully", reply_id: result.insertId });
+  } catch (err) {
+      console.error("Error creating reply:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
+  }
+});
+
+
+// route to fetch replies for a post
+app.get("/replies/:post_id", async (req, res) => {
+  const { post_id } = req.params;
+
+  try {
+      const [replies] = await db.execute(`
+          SELECT pr.reply_id, pr.reply_description, pr.created_at,
+                 u.first_name, u.last_name, u.profile_picture
+          FROM post_replies pr
+          JOIN users u ON pr.user_id = u.user_id
+          WHERE pr.post_id = ?
+          ORDER BY pr.created_at ASC
+      `, [post_id]);
+
+      res.json(replies);
+  } catch (err) {
+      console.error("Error fetching replies:", err);
+      res.status(500).json({ message: "Database error", error: err.message });
+  }
+});
 
 
 // Start server

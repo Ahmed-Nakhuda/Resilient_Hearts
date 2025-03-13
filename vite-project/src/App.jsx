@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
 import Signup from './components/signup'
 import Home from './components/home'
-import AdminDashboard from './components/adminDashboard'
 import ProtectedRoute from './components/protectedRoute'
 import FacilitatorDashboard from './components/facilitatorDashboard'
 import UploadCourse from './components/uploadCourse'
@@ -12,6 +11,7 @@ import UserCourses from './components/userCourses'
 import StressManagement from './components/stressManagement'
 import MyCommunity from './components/myCommunity'
 import UserProfile from './components/userProfile'
+import RemoveCourse from './components/removeCourse'
 import './App.css'
 
 function App() {
@@ -37,13 +37,13 @@ function App() {
 
           {/* Admin-only route */}
           <Route
-            path="/admin-dashboard"
-            element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />}
+            path="/upload-course"
+            element={<ProtectedRoute element={<UploadCourse />} allowedRoles={["admin"]} />}
           />
 
           <Route
-            path="/upload-course"
-            element={<ProtectedRoute element={<UploadCourse />} allowedRoles={["admin"]} />}
+            path="/remove-course"
+            element={<ProtectedRoute element={<RemoveCourse />} allowedRoles={["admin"]} />}
           />
 
 

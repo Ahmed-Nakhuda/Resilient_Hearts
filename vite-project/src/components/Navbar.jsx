@@ -58,6 +58,7 @@ const Navbar = () => {
                     <li><a href="/login" className="nav-button">Login</a></li>
                     <li><a href="/user-courses" className="nav-button">My Courses</a></li>
                     {isAdmin && <li><a href="/upload-course" className="nav-button">Upload Course</a></li>}
+                    {isAdmin && <li><a href="/remove-course" className="nav-button">Remove Course</a></li>}
 
                     {(isEnrolled || isAdmin || isFacilitator) && (
                         <li><a href="/my-community" className="nav-button">My Community</a></li>
@@ -73,7 +74,7 @@ const Navbar = () => {
                                     width={50} 
                                     height={50} 
                                     alt="Profile" 
-                                    style={{ borderRadius: '50%' }} // Make it circular
+                                    style={{ borderRadius: '50%' }} 
                                     className="profile-picture"
                                 />
                             </a>
