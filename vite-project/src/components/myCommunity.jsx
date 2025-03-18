@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
-import { Typography, Card, CardContent, Button, Box, TextField } from '@mui/material';
+import { Typography, Card, CardContent, CardActions, Avatar, Button, Box, TextField } from '@mui/material';
 import axios from "axios";
 import Navbar from "./Navbar";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Textarea from '@mui/joy/Textarea';
 import "../stylesheets/myCommunity.css";
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
