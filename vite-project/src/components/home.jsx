@@ -104,11 +104,7 @@ const Home = () => {
                 >
                   <CardContent>
                     <img
-<<<<<<< Updated upstream
-                      src={course.image}
-=======
-                      //src={course.image}  // Cloudinary URL
->>>>>>> Stashed changes
+                      src={course.image}  // Cloudinary URL
                       alt={course.title}
                       style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 2 }}
                     />

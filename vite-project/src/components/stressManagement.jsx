@@ -184,8 +184,4 @@ const StressManagement = () => {
     );
 };
 
-<<<<<<< Updated upstream
 export default StressManagement;
-=======
-export default StressManagement;
->>>>>>> Stashed changes
