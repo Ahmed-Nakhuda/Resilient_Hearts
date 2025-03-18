@@ -24,10 +24,10 @@ const Navbar = () => {
                     setIsFacilitator(true);
                 }
 
-               // Fetch the user's profile picture using user_id from the session
-               // const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
-                
-               // console.log("Profile Response:", profileResponse.data);  // Debugging line to check the profile picture data
+                // Fetch the user's profile picture using user_id from the session
+                // const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
+
+                // console.log("Profile Response:", profileResponse.data);  // Debugging line to check the profile picture data
 
                 // if (profileResponse.data.profile_picture) {
                 //     setProfilePicture(profileResponse.data.profile_picture);  // Set the profile picture URL
@@ -41,7 +41,7 @@ const Navbar = () => {
         };
 
         fetchUserRole();
-    }, []);  
+    }, []);
 
     return (
         <nav>
@@ -49,7 +49,7 @@ const Navbar = () => {
                 <div className="nav-left">
                     <li><a href='/'>
                         <img src="../src/assets/icon.png"
-                            width={50} 
+                            width={50}
                             height={50}
                             alt="Home"
                             className="icon">
@@ -63,18 +63,26 @@ const Navbar = () => {
                     {(isEnrolled || isAdmin || isFacilitator) && (
                         <li><a href="/my-community" className="nav-button">My Community</a></li>
                     )}
+
+                    {(isEnrolled) && (
+                        <li><a href="/message-facilitator" className="nav-button">Message Facilitator</a></li>
+                    )}
+
+                    {(isFacilitator) && ( 
+                        <li><a href="/facilitator-messages" className="nav-button">Facilitator Messages</a></li>
+                    )}
                 </div>
-              
+
                 <div className="nav-right">
                     {(isEnrolled || isAdmin || isFacilitator) && (
                         <li>
                             <a href="/user-profile">
-                                <img 
-                                    src={profilePicture} 
-                                    width={50} 
-                                    height={50} 
-                                    alt="Profile" 
-                                    style={{ borderRadius: '50%' }} 
+                                <img
+                                    src={profilePicture}
+                                    width={50}
+                                    height={50}
+                                    alt="Profile"
+                                    style={{ borderRadius: '50%' }}
                                     className="profile-picture"
                                 />
                             </a>

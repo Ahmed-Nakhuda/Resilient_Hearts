@@ -7,6 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import Textarea from '@mui/joy/Textarea';
 import "../stylesheets/myCommunity.css";
 
+
 const Post = () => {
   const [posts, setPosts] = useState([]);
   const [postDescription, setPostDescription] = useState("");
