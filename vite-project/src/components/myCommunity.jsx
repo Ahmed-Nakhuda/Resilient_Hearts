@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
-<<<<<<< Updated upstream
-import { Typography, Card, CardContent, Button, Box, TextField } from '@mui/material';
-=======
-import { Typography, Card, CardContent, CardActions, Button, Box, TextField } from '@mui/material';
->>>>>>> Stashed changes
+import { Typography, Card, CardContent, CardActions, Button, Avatar, Box, TextField } from '@mui/material';
 import axios from "axios";
 import Navbar from "./Navbar";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Textarea from '@mui/joy/Textarea';
 import "../stylesheets/myCommunity.css";
-import Avatar from '@mui/material/Avatar';
+
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
