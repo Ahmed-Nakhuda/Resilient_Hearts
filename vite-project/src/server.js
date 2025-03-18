@@ -533,6 +533,141 @@ app.get("/replies/:post_id", async (req, res) => {
 });
 
 
+
+// send message to facilitator
+app.post("/send-message", async (req, res) => {
+  const { sender_id, message_text } = req.body;
+
+  if (!sender_id || !message_text.trim()) {
+      return res.status(400).json({ error: "Message cannot be empty." });
+  }
+
+  try {
+      await db.execute(
+          "INSERT INTO messages (sender_id, message_text) VALUES (?, ?)",
+          [sender_id, message_text]
+      );
+      res.status(201).json({ message: "Message sent successfully!" });
+  } catch (err) {
+      console.error("Error sending message:", err);
+      res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+// fetch messages and replies for a user
+app.get("/messages/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const [messages] = await db.execute(`
+      SELECT m.message_id, m.message_text, m.sent_at,
+             r.reply_id, r.reply_text, r.sent_at AS reply_sent_at
+      FROM messages m
+      LEFT JOIN replies r ON m.message_id = r.message_id
+      WHERE m.sender_id = ?
+      ORDER BY m.sent_at ASC, r.sent_at ASC
+    `, [userId]);
+
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+// send reply to user as facilitator
+app.post("/send-reply", async (req, res) => {
+  const { message_id, sender_id, reply_text } = req.body;
+
+  if (!message_id || !sender_id || !reply_text.trim()) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    await db.execute(
+      "INSERT INTO replies (message_id, sender_id, reply_text) VALUES (?, ?, ?)",
+      [message_id, sender_id, reply_text]
+    );
+    res.status(201).json({ message: "Reply sent successfully" });
+  } catch (error) {
+    console.error("Error sending reply:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+// fetch all messages
+app.get("/all-messages", async (req, res) => {
+  try {
+    const [messages] = await db.execute(`
+      SELECT m.message_id, m.message_text, m.sent_at,
+             m.sender_id, u.first_name, u.last_name
+      FROM messages m
+      JOIN users u ON m.sender_id = u.user_id
+      ORDER BY m.sent_at ASC
+    `);
+    console.log("Fetched messages:", messages); // Log the messages to ensure sender_id is included
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching all messages:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+// display reply from facilitator to user
+app.get("/replies/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const [messages] = await db.execute(`
+      SELECT m.message_id, m.message_text, m.sent_at, 
+             r.reply_id, r.reply_text, r.sent_at AS reply_sent_at
+      FROM messages m
+      LEFT JOIN replies r ON m.message_id = r.message_id
+      WHERE m.sender_id = ?
+      ORDER BY m.sent_at ASC, r.sent_at ASC
+    `, [userId]);
+
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+// Endpoint to fetch all messages and replies for a given user (userId)
+app.get("/conversation/:userId", async (req, res) => {
+  const { userId } = req.params; // Extract userId from the URL parameters
+
+  try {
+    // Query to fetch messages and replies for the given userId
+    const [messages] = await db.execute(`
+      SELECT m.message_id, m.message_text, m.sent_at, 
+             r.reply_id, r.reply_text, r.sent_at AS reply_sent_at,
+             u.first_name, u.last_name
+      FROM messages m
+      LEFT JOIN replies r ON m.message_id = r.message_id
+      JOIN users u ON m.sender_id = u.user_id
+      WHERE m.sender_id = ?
+      ORDER BY m.sent_at ASC, r.sent_at ASC
+    `, [userId]);
+
+    // Send the messages with replies as the response
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching conversation:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
 // Start server
 const port = 3001;
 app.listen(port, () => {

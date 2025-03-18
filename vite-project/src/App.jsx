@@ -3,7 +3,6 @@ import Login from './components/Login'
 import Signup from './components/signup'
 import Home from './components/home'
 import ProtectedRoute from './components/protectedRoute'
-import FacilitatorDashboard from './components/facilitatorDashboard'
 import UploadCourse from './components/uploadCourse'
 import CourseContent from './components/courseContent'
 import Payment from './components/payment'
@@ -12,6 +11,9 @@ import StressManagement from './components/stressManagement'
 import MyCommunity from './components/myCommunity'
 import UserProfile from './components/userProfile'
 import RemoveCourse from './components/removeCourse'
+import MessageFacilitator from './components/messageFacilitator'
+import FacilitatorMessages from './components/FacilitatorMessages'
+import ConversationPage from './components/conversationPage'
 import './App.css'
 
 function App() {
@@ -49,18 +51,26 @@ function App() {
 
           {/* Facilitator-only route */}
           <Route
-            path="/facilitator-dashboard"
-            element={<ProtectedRoute element={<FacilitatorDashboard />} allowedRoles={["facilitator"]} />}
+            path="/facilitator-messages"
+            element={<ProtectedRoute element={<FacilitatorMessages />} allowedRoles={["facilitator"]} />}
+          />
+
+          <Route 
+            path="/conversation/:userId" 
+            element={<ProtectedRoute element={<ConversationPage />} allowedRoles={["facilitator"]} />}
           />
 
 
           {/* Enrolled user-only route */}
           <Route
             path="/my-community"
-            element={<ProtectedRoute element={<MyCommunity />} allowedRoles={["enrolled"]} />}
+            element={<ProtectedRoute element={<MyCommunity />} allowedRoles={["enrolled", "admin"]} />}
           />
 
-
+          <Route 
+            path="/message-facilitator" 
+            element={<ProtectedRoute element={<MessageFacilitator />} allowedRoles={["enrolled", "admin"]} />}
+          />
         </Routes>
       </Router>
     </>
