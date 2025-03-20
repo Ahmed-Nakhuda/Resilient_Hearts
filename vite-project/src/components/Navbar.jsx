@@ -64,7 +64,7 @@ const Navbar = () => {
                         <li><a href="/my-community" className="nav-button">My Community</a></li>
                     )}
 
-                    {(isEnrolled) && (
+                    {(isEnrolled || isAdmin) && (
                         <li><a href="/message-facilitator" className="nav-button">Message Facilitator</a></li>
                     )}
 
