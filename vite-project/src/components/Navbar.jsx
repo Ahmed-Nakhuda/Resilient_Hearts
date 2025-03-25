@@ -48,7 +48,7 @@ const Navbar = () => {
             <ul>
                 <div className="nav-left">
                     <li><a href='/'>
-                        <img src="../src/assets/icon.png"
+                        <img src="/src/assets/icon.png"
                             width={50}
                             height={50}
                             alt="Home"

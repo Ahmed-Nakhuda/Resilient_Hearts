@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Container, CircularProgress, Alert, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Navbar from './Navbar';
+import "../stylesheets/courseContent.css";
 
 
 const CourseContent = () => {
@@ -46,9 +47,9 @@ const CourseContent = () => {
 
     return (
         <>
-            <Navbar />
+            <Navbar/>
             <div style={{ display: "flex" }}>
-                <div style={{ width: '30%' }}>
+                <div style={{ width: '30%', margin: '1rem' }}>
                     {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
                     {error && <Alert severity="error">{error}</Alert>}
 
@@ -63,11 +64,11 @@ const CourseContent = () => {
                             </AccordionSummary>
 
                             <AccordionDetails sx={{ display: 'block' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div className="content-left" style={{ display: 'flex', flexDirection: 'column',  }}>
                                     {content.map((item) => (
                                         <div
                                             key={item.content_id}
-                                            style={{ display: 'flex', alignItems: 'center', padding: '8px', cursor: 'pointer' }}
+                                            style={{ display: 'flex', alignItems: 'center', padding: '8px', cursor: 'pointer', borderRadius: '10px' }}
                                             onClick={() => handleContentClick(item)}
                                         >
                                             {/* Circle next to the content description */}
@@ -90,22 +91,22 @@ const CourseContent = () => {
                 </div>
 
                 {/* Right: Main Content Display */}
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, margin: '1rem 1rem 1rem 0' }}>
                     {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
                     {error && <Alert severity="error">{error}</Alert>}
 
                     {selectedContent && (
                         <>
-                            {/* {selectedContent.content_type === 'video' && (
+                            {selectedContent.content_type === 'video' && (
                                 <video width="100%" controls>
                                     <source src={selectedContent.content_url} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
-                            )} */}
+                            )}
 
                             {selectedContent.content_type === 'pdf' && (
                                 <iframe
-                                    //src={`${selectedContent.content_url}?fl_attachment`} // Forces direct download
+                                    src={`${selectedContent.content_url}?fl_attachment`} // Forces direct download
                                     width="100%"
                                     height="600px"
                                     title={`PDF Viewer - ${selectedContent.content_id}`}

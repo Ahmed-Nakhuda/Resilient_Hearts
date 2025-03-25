@@ -7,7 +7,7 @@ import UploadCourse from './components/uploadCourse'
 import CourseContent from './components/courseContent'
 import Payment from './components/payment'
 import UserCourses from './components/userCourses'
-import StressManagement from './components/stressManagement'
+import CourseDescription from './components/courseDescription'
 import MyCommunity from './components/myCommunity'
 import UserProfile from './components/userProfile'
 import RemoveCourse from './components/removeCourse'
@@ -34,7 +34,7 @@ function App() {
           {/* Pass id's */}
           <Route path="user-courses/course-content/:courseId" element={<CourseContent />} />
           <Route path="/payment/:courseId" element={<Payment />} />
-          <Route path='/stress-management-and-healthy-coping/:courseId' element={<StressManagement />}></Route>
+          <Route path='/course-description/:courseId' element={<CourseDescription />}></Route>
 
 
           {/* Admin-only route */}

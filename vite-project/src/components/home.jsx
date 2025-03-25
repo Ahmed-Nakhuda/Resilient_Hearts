@@ -31,7 +31,7 @@ const Home = () => {
   }, []);
 
   const navigateToViewCourseDetails = (courseId) => {
-    navigate(`/stress-management-and-healthy-coping/${courseId}`);
+    navigate(`/course-description/${courseId}`);
   };
 
   // Function to scroll left
@@ -111,7 +111,14 @@ const Home = () => {
                     <Typography variant="h6" gutterBottom>
                       {course.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary"
+                    sx={{
+                      display: '-webkit-box',
+                      overflow: 'hidden',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 3,
+                      textOverflow: "ellipsis"
+                    }}>
                       {course.description}
                     </Typography>
                     <Typography variant="h6" sx={{ mt: 1 }}>

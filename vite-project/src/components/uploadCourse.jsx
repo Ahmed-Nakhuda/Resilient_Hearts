@@ -9,6 +9,8 @@ const UploadCourse = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null); // new image state
+  const [quote, setQuote] = useState('');
+  const [duration, setDuration] = useState('');
   const [contentFiles, setContentFiles] = useState([]);
   const [contentTypes, setContentTypes] = useState([]);
   const [stepNumbers, setStepNumbers] = useState([]);
@@ -27,6 +29,8 @@ const UploadCourse = () => {
     formData.append("description", description);
     formData.append("price", price);
     formData.append("image", image); // include the image file
+    formData.append("quote", quote);
+    formData.append("duration", duration);
 
     try {
       const response = await axios.post(
@@ -112,6 +116,28 @@ const UploadCourse = () => {
               variant="outlined"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Quote"
+              variant="outlined"
+              value={quote}
+              onChange={(e) => setQuote(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Approximate Duration"
+              variant="outlined"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
               required
             />
           </Box>

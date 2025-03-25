@@ -1,0 +1,9 @@
+.content-left div:hover
+{
+    background-color: lightgray;
+}
+
+.content-left div:active
+{
+    background-color: rgb(180, 180, 180);
+}
