@@ -29,10 +29,6 @@ const Home = () => {
     }, []);
 
     const navigateToViewCourseDetails = (courseId) => {
-        navigate(`/stress-management-and-healthy-coping/${courseId}`);
-    };
-
-    const navigateToViewCourseDetails = (courseId) => {
       navigate(`/course-description/${courseId}`);
     };
   

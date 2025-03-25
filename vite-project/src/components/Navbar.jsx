@@ -65,23 +65,10 @@ const Navbar = () => {
         };
         fetchUserRole();
     }, []);
-  
-    return (
-        <nav>
-            <ul>
-                <div className="nav-left">
-                    <li><a href='/'>
-                        <img src="/src/assets/icon.png"
-                            width={50}
-                            height={50}
-                            alt="Home"
-                            className="icon">
-                        </img>
-                    </a></li>
-                    <li><a href="/login" className="nav-button">Login</a></li>
-                    <li><a href="/user-courses" className="nav-button">My Courses</a></li>
-                    {isAdmin && <li><a href="/upload-course" className="nav-button">Upload Course</a></li>}
-                    {isAdmin && <li><a href="/remove-course" className="nav-button">Remove Course</a></li>}
+
+    // Profile menu handlers
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
 
     // Mobile drawer handlers
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
@@ -136,12 +123,12 @@ const Navbar = () => {
                         <ListItemText primary="My Community" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
                 )}
-                {isEnrolled && (
+                {(isEnrolled || isAdmin) && (
                     <ListItem button onClick={() => handleNavigate('/message-facilitator')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                         <ListItemText primary="Message Facilitator" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
                 )}
-                {isFacilitator && (
+                {(isFacilitator) && (
                     <ListItem button onClick={() => handleNavigate('/facilitator-messages')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                         <ListItemText primary="Facilitator Messages" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
@@ -301,7 +288,7 @@ const Navbar = () => {
                                 My Community
                             </Button>
                         )}
-                        {isEnrolled && (
+                        {(isEnrolled || isAdmin) && (
                             <Button 
                                 onClick={() => handleNavigate('/message-facilitator')} 
                                 sx={{ 
@@ -325,7 +312,7 @@ const Navbar = () => {
                                 Message Facilitator
                             </Button>
                         )}
-                        {isFacilitator && (
+                        {(isFacilitator) && (
                             <Button 
                                 onClick={() => handleNavigate('/facilitator-messages')} 
                                 sx={{ 
