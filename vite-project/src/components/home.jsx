@@ -1,84 +1,105 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Container, Typography, Grid, Card, CardContent, Button, CircularProgress, Alert, IconButton } from '@mui/material';
+import { Container, Typography, Card, CardContent, Button, CircularProgress, Alert, IconButton, Paper, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../stylesheets/home.css";
 import Navbar from './Navbar';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material'; // Import icons for scroll buttons
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import Footer from './Footer';
 
 const Home = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const scrollContainerRef = useRef(null); // Ref for the scrollable container
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const scrollContainerRef = useRef(null);
 
-  // Fetch courses 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/view-course');
-        const data = await response.json();
-        setCourses(data);
-      } catch (err) {
-        setError('Failed to load courses');
-      } finally {
-        setLoading(false);
-      }
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/view-course');
+                const data = await response.json();
+                setCourses(data);
+            } catch (err) {
+                setError('Failed to load courses');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
+
+    const navigateToViewCourseDetails = (courseId) => {
+        navigate(`/stress-management-and-healthy-coping/${courseId}`);
     };
 
-    fetchCourses();
-  }, []);
+    const navigateToViewCourseDetails = (courseId) => {
+      navigate(`/course-description/${courseId}`);
+    };
+  
+    const scrollLeft = () => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+        }
+    };
 
-  const navigateToViewCourseDetails = (courseId) => {
-    navigate(`/course-description/${courseId}`);
-  };
+    const scrollRight = () => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+    };
 
-  // Function to scroll left
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-    }
-  };
+    return (
+        <>
+            {/* Sticky Navbar */}
+            <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
+                <Navbar />
+            </Box>
 
-  // Function to scroll right
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-    }
-  };
+            <Container maxWidth="xl" sx={{ mt: 3 }}>
+                <Paper 
+                    elevation={3} 
+                    sx={{ 
+                        p: 4, 
+                        borderRadius: 2, 
+                        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%)' 
+                    }}
+                >
+                    <Box sx={{ textAlign: 'center', mb: 4 }}>
+                        <Typography 
+                            variant="h4" 
+                            sx={{ fontWeight: 'bold', color: '#1976d2', mb: 1 }}
+                        >
+                            Home
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            sx={{ color: '#555', fontStyle: 'italic' }}
+                        >
+                            "Unlock Your Potential with Our Courses"
+                        </Typography>
+                    </Box>
 
-  return (
-    <>
-      <Navbar />
-      {/* Main Content */}
-      <Container maxWidth="xl" sx={{ mt: 3 }}>
-        <Typography variant="h4" gutterBottom align="center">
-          Home
-        </Typography>
+                    {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
 
-        {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 2 }} />}
+                    {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
-        {error && <Alert severity="error">{error}</Alert>}
-
-        {courses.length > 0 ? (
-          <div style={{ position: 'relative' }}>
-            {/* Left Scroll Button */}
-            <IconButton
-              onClick={scrollLeft}
-              sx={{
-                position: 'absolute',
-                left: -80,
-                top: '50%',
-                padding: '20px',
-                transform: 'translateY(-50%)',
-                zIndex: 1,
-                backgroundColor: 'rgba(230, 230, 230, 0.8)',
-                '&:hover': { backgroundColor: 'rgba(150, 150, 150, 1)' },
-              }}
-            >
-              <ChevronLeft />
-            </IconButton>
+                    {courses.length > 0 ? (
+                        <div style={{ position: 'relative' }}>
+                            <IconButton
+                                onClick={scrollLeft}
+                                sx={{
+                                    position: 'absolute',
+                                    left: -80,
+                                    top: '50%',
+                                    padding: '20px',
+                                    transform: 'translateY(-50%)',
+                                    zIndex: 1,
+                                    backgroundColor: 'rgba(230, 230, 230, 0.8)',
+                                    '&:hover': { backgroundColor: 'rgba(150, 150, 150, 1)' },
+                                }}
+                            >
+                                <ChevronLeft />
+                            </IconButton>
 
             {/* Scrollable Container */}
             <div
@@ -137,36 +158,40 @@ const Home = () => {
               ))}
             </div>
 
-            {/* Right Scroll Button */}
-            <IconButton
-              onClick={scrollRight}
-              sx={{
-                position: 'absolute',
-                right: -80,
-                top: '50%',
-                padding: '20px',
-                transform: 'translateY(-50%)',
-                zIndex: 1,
-                backgroundColor: 'rgba(230, 230, 230, 0.8)',
-                '&:hover': { backgroundColor: 'rgba(150, 150, 150, 1)' },
-              }}
-            >
-              <ChevronRight />
-            </IconButton>
-          </div>
-        ) : (
-          !loading && (
-            <Typography variant="body1" align="center">
-              No courses available
-            </Typography>
-          )
-        )}
-      </Container>
 
-      {/* Footer */}
-      <Footer />
-    </>
-  );
+                            <IconButton
+                                onClick={scrollRight}
+                                sx={{
+                                    position: 'absolute',
+                                    right: -80,
+                                    top: '50%',
+                                    padding: '20px',
+                                    transform: 'translateY(-50%)',
+                                    zIndex: 1,
+                                    backgroundColor: 'rgba(230, 230, 230, 0.8)',
+                                    '&:hover': { backgroundColor: 'rgba(150, 150, 150, 1)' },
+                                }}
+                            >
+                                <ChevronRight />
+                            </IconButton>
+                        </div>
+                    ) : (
+                        !loading && (
+                            <Typography 
+                                variant="body1" 
+                                align="center" 
+                                sx={{ color: '#666', mt: 3 }}
+                            >
+                                No courses available
+                            </Typography>
+                        )
+                    )}
+                </Paper>
+            </Container>
+
+            <Footer />
+        </>
+    );
 };
 
 export default Home;

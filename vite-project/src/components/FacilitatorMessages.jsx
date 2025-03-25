@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import Footer from './Footer'; // Added Footer import
+import { 
+    Typography, 
+    Box, 
+    Paper, 
+    Button, 
+    Container 
+} from '@mui/material';
 
 const FacilitatorMessages = () => {
     const [messages, setMessages] = useState([]);
-    const navigate = useNavigate(); // useNavigate for React Router v6
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchMessages();
@@ -14,7 +22,7 @@ const FacilitatorMessages = () => {
     const fetchMessages = async () => {
         try {
             const response = await axios.get("http://localhost:3001/all-messages");
-            console.log("Fetched messages:", response.data); // Log the response data
+            console.log("Fetched messages:", response.data);
             setMessages(response.data);
         } catch (error) {
             console.error("Error fetching messages:", error);
@@ -22,15 +30,14 @@ const FacilitatorMessages = () => {
     };
 
     const handleViewConversation = (userId) => {
-        console.log("Clicked to view conversation with user ID:", userId); // Log the user ID passed
+        console.log("Clicked to view conversation with user ID:", userId);
         if (userId) {
             navigate(`/conversation/${userId}`);
         } else {
-            console.error("User ID is undefined!"); // Log error if ID is missing
+            console.error("User ID is undefined!");
         }
     };
 
-    // Filter messages to only include one per sender
     const uniqueMessages = messages.filter(
         (msg, index, self) =>
             index === self.findIndex((m) => m.sender_id === msg.sender_id)
@@ -38,27 +45,99 @@ const FacilitatorMessages = () => {
 
     return (
         <>
-            <Navbar />
-            <h1>All Messages</h1>
-            <p>View all messages sent by users.</p>
+            {/* Sticky Navbar */}
+            <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
+                <Navbar />
+            </Box>
 
-            <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: "10px" }}>
-                {uniqueMessages.length > 0 ? (
-                    uniqueMessages.map((msg) => (
-                        <div key={msg.sender_id} style={{ margin: "10px 0", padding: "10px", border: "1px solid #ddd", borderRadius: "5px" }}>
-                            <p><strong>{msg.first_name} {msg.last_name}</strong></p>
-                            <button
-                                onClick={() => handleViewConversation(msg.sender_id)}
-                                style={{ marginTop: "5px", backgroundColor: "lightgray", padding: "5px 10px", border: "none", cursor: "pointer" }}
+            {/* Enhanced Body Design */}
+            <Container maxWidth="md" sx={{ py: 5 }}>
+                <Paper 
+                    elevation={3} 
+                    sx={{ 
+                        p: 4, 
+                        borderRadius: 2, 
+                        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%)' 
+                    }}
+                >
+                    <Box sx={{ textAlign: 'center', mb: 4 }}>
+                        <Typography 
+                            variant="h3" 
+                            sx={{ fontWeight: 'bold', color: '#1976d2', mb: 1 }}
+                        >
+                            All Messages
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            sx={{ color: '#555', fontStyle: 'italic' }}
+                        >
+                            "View Conversations from Your Users"
+                        </Typography>
+                    </Box>
+
+                    <Box 
+                        sx={{ 
+                            maxHeight: '400px', 
+                            overflowY: 'auto', 
+                            border: '1px solid #ddd', 
+                            borderRadius: 2, 
+                            p: 2,
+                            '&::-webkit-scrollbar': { width: 8 },
+                            '&::-webkit-scrollbar-thumb': { backgroundColor: '#1976d2', borderRadius: 4 }
+                        }}
+                    >
+                        {uniqueMessages.length > 0 ? (
+                            uniqueMessages.map((msg) => (
+                                <Box
+                                    key={msg.sender_id}
+                                    sx={{
+                                        mb: 2,
+                                        p: 2,
+                                        border: '1px solid #ddd',
+                                        borderRadius: 2,
+                                        backgroundColor: '#fff',
+                                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                                        transition: 'transform 0.3s',
+                                        '&:hover': { transform: 'scale(1.02)' }
+                                    }}
+                                >
+                                    <Typography 
+                                        variant="h6" 
+                                        sx={{ color: '#333', fontWeight: 'bold', mb: 1 }}
+                                    >
+                                        {msg.first_name} {msg.last_name}
+                                    </Typography>
+                                    <Button
+                                        onClick={() => handleViewConversation(msg.sender_id)}
+                                        variant="contained"
+                                        sx={{
+                                            backgroundColor: '#1976d2',
+                                            '&:hover': { backgroundColor: '#115293' },
+                                            py: 1,
+                                            px: 3,
+                                            borderRadius: 1,
+                                            boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
+                                        }}
+                                    >
+                                        View Conversation
+                                    </Button>
+                                </Box>
+                            ))
+                        ) : (
+                            <Typography 
+                                variant="body1" 
+                                align="center" 
+                                sx={{ color: '#666', py: 2 }}
                             >
-                                View Conversation
-                            </button>
-                        </div>
-                    ))
-                ) : (
-                    <p>No messages yet.</p>
-                )}
-            </div>
+                                No messages yet.
+                            </Typography>
+                        )}
+                    </Box>
+                </Paper>
+            </Container>
+
+            {/* Footer Added */}
+            <Footer />
         </>
     );
 };
