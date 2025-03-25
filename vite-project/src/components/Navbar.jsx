@@ -65,10 +65,23 @@ const Navbar = () => {
         };
         fetchUserRole();
     }, []);
-
-    // Profile menu handlers
-    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
-    const handleMenuClose = () => setAnchorEl(null);
+  
+    return (
+        <nav>
+            <ul>
+                <div className="nav-left">
+                    <li><a href='/'>
+                        <img src="/src/assets/icon.png"
+                            width={50}
+                            height={50}
+                            alt="Home"
+                            className="icon">
+                        </img>
+                    </a></li>
+                    <li><a href="/login" className="nav-button">Login</a></li>
+                    <li><a href="/user-courses" className="nav-button">My Courses</a></li>
+                    {isAdmin && <li><a href="/upload-course" className="nav-button">Upload Course</a></li>}
+                    {isAdmin && <li><a href="/remove-course" className="nav-button">Remove Course</a></li>}
 
     // Mobile drawer handlers
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen);

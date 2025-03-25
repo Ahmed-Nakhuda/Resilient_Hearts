@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'; // Added useLocation
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -19,6 +19,8 @@ import {
 } from '@mui/icons-material';
 
 const StressManagement = () => {
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { courseId } = useParams();
     const location = useLocation(); // Hook to track route changes
@@ -28,25 +30,40 @@ const StressManagement = () => {
         window.scrollTo(0, 0); // Scrolls to the top of the page
     }, [location.pathname]); // Trigger on pathname change
 
+    // Fetch courses 
+    useEffect(() => {
+    const fetchCourses = async () => {
+        try {
+        const response = await fetch(`http://localhost:3001/view-course/${courseId}`);
+        const data = await response.json();
+        setCourses(data);
+        } catch (err) {
+        setError('Failed to load courses');
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    fetchCourses();
+    }, []);
+
     const navigateToPayment = (courseId) => {
         navigate(`/payment/${courseId}`);
     };
 
     const highlights = [
-        { text: "Duration: Approximately 90 minutes", icon: <AccessTime sx={{ color: '#1976d2', mr: 1 }} /> },
-        { text: "Interactive stress assessment tools", icon: <Assessment sx={{ color: '#1976d2', mr: 1 }} /> },
-        { text: "Downloadable coping strategies workbook", icon: <Book sx={{ color: '#1976d2', mr: 1 }} /> },
-        { text: "Techniques including mindfulness and breathing exercises", icon: <SelfImprovement sx={{ color: '#1976d2', mr: 1 }} /> },
-        { text: "Access to guided relaxation audio sessions", icon: <Headphones sx={{ color: '#1976d2', mr: 1 }} /> }
+        { text: `Duration: Approximately ${courses.map((course) => (course.duration))} minutes`, icon: <AccessTime sx={{ color: '#1976d2', mr: 1 }} /> },
+        { text: `Interactive stress assessment tools`, icon: <Assessment sx={{ color: '#1976d2', mr: 1 }} /> },
+        { text: `Downloadable coping strategies workbook`, icon: <Book sx={{ color: '#1976d2', mr: 1 }} /> },
+        { text: `Techniques including mindfulness and breathing exercises`, icon: <SelfImprovement sx={{ color: '#1976d2', mr: 1 }} /> },
+        { text: `Access to guided relaxation audio sessions`, icon: <Headphones sx={{ color: '#1976d2', mr: 1 }} /> }
     ];
 
     return (
         <>
-            <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
-                <Navbar />
-            </Box>
-
-            <Container maxWidth="md" sx={{ py: 4 }}>
+            <Navbar/>
+            {courses.map((course) => (
+            <Container maxWidth="md" key={course.id} sx={{ py: 4 }}>
                 <Paper 
                     elevation={3} 
                     sx={{ 
@@ -65,7 +82,7 @@ const StressManagement = () => {
                                 mb: 1 
                             }}
                         >
-                            Stress Management and Healthy Coping
+                            {course.title}
                         </Typography>
                         <Typography 
                             variant="h6" 
@@ -74,7 +91,7 @@ const StressManagement = () => {
                                 fontStyle: 'italic' 
                             }}
                         >
-                            "Master Your Stress, Transform Your Life"
+                            "{course.quote}"
                         </Typography>
                     </Box>
 
@@ -94,26 +111,7 @@ const StressManagement = () => {
                                 mb: 2 
                             }}
                         >
-                            Welcome to "Stress Management and Healthy Coping" - an interactive online course designed to help you navigate life's challenges with confidence and resilience.
-                        </Typography>
-                        <Typography 
-                            variant="body1" 
-                            sx={{ 
-                                lineHeight: 1.6, 
-                                color: '#666',
-                                mb: 2 
-                            }}
-                        >
-                            This course is perfect for individuals of all ages looking to develop practical strategies for managing stress effectively. Whether you're dealing with work pressure, personal challenges, or simply want to maintain a balanced lifestyle, this course provides you with essential tools and techniques to cope healthily.
-                        </Typography>
-                        <Typography 
-                            variant="body1" 
-                            sx={{ 
-                                lineHeight: 1.6, 
-                                color: '#666' 
-                            }}
-                        >
-                            Through engaging content and practical exercises, you'll learn how to identify stress triggers, implement relaxation techniques, and build long-term resilience. The course includes real-life scenarios and expert insights to support your journey toward better well-being.
+                            {course.description}
                         </Typography>
                     </Box>
 
@@ -178,7 +176,7 @@ const StressManagement = () => {
                     </Box>
                 </Paper>
             </Container>
-
+            ))}
             <Footer />
         </>
     );

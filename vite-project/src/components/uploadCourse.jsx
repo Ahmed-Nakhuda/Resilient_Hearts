@@ -19,42 +19,40 @@ import Navbar from './Navbar';
 import Footer from './Footer'; // Added Footer import
 
 const UploadCourse = () => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [image, setImage] = useState(null);
-    const [contentFiles, setContentFiles] = useState([]);
-    const [contentTypes, setContentTypes] = useState([]);
-    const [stepNumbers, setStepNumbers] = useState([]);
-    const [contentDescription, setContentDescription] = useState([]);
-    const [success, setSuccess] = useState('');
-    const [error, setError] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [image, setImage] = useState(null); // new image state
+  const [quote, setQuote] = useState('');
+  const [duration, setDuration] = useState('');
+  const [contentFiles, setContentFiles] = useState([]);
+  const [contentTypes, setContentTypes] = useState([]);
+  const [stepNumbers, setStepNumbers] = useState([]);
+  const [contentDescription, setContentDescription] = useState('');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
 
-    const handleCourseSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
+  const handleCourseSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("price", price);
-        formData.append("image", image);
+    // Use FormData to send course data and image file
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("image", image); // include the image file
+    formData.append("quote", quote);
+    formData.append("duration", duration);
 
-        try {
-            const response = await axios.post(
-                "http://localhost:3001/upload-course",
-                formData,
-                {
-                    withCredentials: true,
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
-            setSuccess(response.data.message);
-            const courseId = response.data.courseId;
-            handleContentSubmit(courseId);
-        } catch (err) {
-            setError(err.response?.data?.message || "Error uploading course");
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/upload-course",
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
         }
     };
 
@@ -81,6 +79,193 @@ const UploadCourse = () => {
         } catch (err) {
             setError(err.response?.data?.message || "Error uploading content");
         }
+      );
+      setSuccess((prevSuccess) => prevSuccess + ` ${response.data.message}`);
+    } catch (err) {
+      setError(err.response?.data?.message || "Error uploading content");
+    }
+  };
+  
+
+  const handleFileChange = (e) => {
+    setContentFiles([...e.target.files]);
+  };
+
+  const handleContentTypeChange = (e, index) => {
+    const updatedContentTypes = [...contentTypes];
+    updatedContentTypes[index] = e.target.value;
+    setContentTypes(updatedContentTypes);
+  };
+
+  const handleStepNumberChange = (e, index) => {
+    const updatedStepNumbers = [...stepNumbers];
+    updatedStepNumbers[index] = e.target.value;
+    setStepNumbers(updatedStepNumbers);
+  };
+
+  const handleContentDescriptionChange = (e, index) => {
+    const updatedContentDescription = [...contentDescription];
+    updatedContentDescription[index] = e.target.value;
+    setContentDescription(updatedContentDescription);
+  };
+
+  return (
+    <>
+      <Navbar />
+      <Container maxWidth="sm">
+        <Typography variant="h4" marginTop={5} gutterBottom>
+          Upload Course
+        </Typography>
+
+        {success && <Typography color="success.main">{success}</Typography>}
+        {error && <Typography color="error.main">{error}</Typography>}
+
+        <form onSubmit={handleCourseSubmit}>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Title"
+              variant="outlined"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Quote"
+              variant="outlined"
+              value={quote}
+              onChange={(e) => setQuote(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Approximate Duration"
+              variant="outlined"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Description"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              label="Price"
+              variant="outlined"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </Box>
+
+          {/* Image Upload Input */}
+          <Box mb={2}>
+            <Button
+              variant="contained"
+              component="label"
+              color="primary"
+            >
+              Select Course Image
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
+                hidden
+                required
+              />
+            </Button>
+            {/* display the name of the image uploaded */}
+            {image && <Typography variant="body2">{image.name}</Typography>}
+          </Box>
+
+          <Typography variant="h6" gutterBottom>
+            Upload Course Content
+          </Typography>
+
+          <Box mb={2}>
+            <Button
+              variant="contained"
+              component="label"
+              color="primary"
+            >
+              Select Content Files
+              <input
+                type="file"
+                multiple
+                onChange={handleFileChange}
+                hidden
+              />
+            </Button>
+          </Box>
+
+          {contentFiles.length > 0 && contentFiles.map((file, index) => (
+            <Box key={index} mb={3}>
+              <Typography variant="body1" gutterBottom>
+                {file.name}
+              </Typography>
+
+              <Grid2 container spacing={2}>
+                <Grid2 item xs={4}>
+                  <FormControl fullWidth>
+                    <InputLabel>Content Type</InputLabel>
+                    <Select
+                      value={contentTypes[index] || ''}
+                      onChange={(e) => handleContentTypeChange(e, index)}
+                      label="Content Type"
+                      required
+                    >
+                      <MenuItem value="pdf">PDF</MenuItem>
+                      <MenuItem value="video">Video</MenuItem>
+                    </Select>
+                    <FormHelperText>Choose content type</FormHelperText>
+                  </FormControl>
+                </Grid2>
+
+                <Grid2 item xs={4}>
+                  <TextField
+                    fullWidth
+                    label="Step Number"
+                    variant="outlined"
+                    type="number"
+                    value={stepNumbers[index] || ''}
+                    onChange={(e) => handleStepNumberChange(e, index)}
+                    required
+                  />
+                </Grid2>
+
+                <Grid2 item xs={4}>
+                  <TextField
+                    fullWidth
+                    label="Content Description"
+                    variant="outlined"
+                    type="text"
+                    value={contentDescription[index] || ''}
+                    onChange={(e) => handleContentDescriptionChange(e, index)}
+                    required
+                  />
+                </Grid2>
+              </Grid2>
     };
 
     const handleFileChange = (e) => {

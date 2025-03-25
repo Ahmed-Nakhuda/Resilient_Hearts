@@ -32,6 +32,10 @@ const Home = () => {
         navigate(`/stress-management-and-healthy-coping/${courseId}`);
     };
 
+    const navigateToViewCourseDetails = (courseId) => {
+      navigate(`/course-description/${courseId}`);
+    };
+  
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
@@ -97,77 +101,63 @@ const Home = () => {
                                 <ChevronLeft />
                             </IconButton>
 
-                            <div
-                                ref={scrollContainerRef}
-                                style={{
-                                    display: 'flex',
-                                    overflowX: 'auto',
-                                    scrollBehavior: 'smooth',
-                                    gap: '16px',
-                                    padding: '8px',
-                                }}
-                            >
-                                {courses.map((course) => (
-                                    <Card
-                                        key={course.id}
-                                        sx={{
-                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                            borderRadius: 2,
-                                            flex: '0 0 auto',
-                                            width: '400px',
-                                            transition: 'transform 0.3s',
-                                            '&:hover': { transform: 'scale(1.03)' }
-                                        }}
-                                    >
-                                        <CardContent sx={{ p: 2 }}>
-                                            <Box 
-                                                component="img"
-                                                src={course.image || 'https://via.placeholder.com/400x200'}
-                                                alt={course.title}
-                                                sx={{ 
-                                                    width: '100%', 
-                                                    height: 200, 
-                                                    objectFit: 'cover', 
-                                                    borderRadius: 2, 
-                                                    mb: 2 
-                                                }}
-                                            />
-                                            <Typography 
-                                                variant="h6" 
-                                                sx={{ color: '#333', mb: 1 }}
-                                            >
-                                                {course.title}
-                                            </Typography>
-                                            <Typography 
-                                                variant="body2" 
-                                                sx={{ color: '#666', mb: 2 }}
-                                            >
-                                                {course.description}
-                                            </Typography>
-                                            <Typography 
-                                                variant="h6" 
-                                                sx={{ fontWeight: 'bold', color: '#1976d2', mb: 2 }}
-                                            >
-                                                ${course.price}
-                                            </Typography>
-                                            <Button
-                                                onClick={() => navigateToViewCourseDetails(course.course_id)}
-                                                variant="contained"
-                                                fullWidth
-                                                sx={{
-                                                    backgroundColor: '#1976d2',
-                                                    '&:hover': { backgroundColor: '#115293' },
-                                                    py: 1,
-                                                    borderRadius: 1,
-                                                    boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
-                                                }}
-                                            >
-                                                View
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+            {/* Scrollable Container */}
+            <div
+              ref={scrollContainerRef}
+              style={{
+                display: 'flex',
+                overflowX: 'auto',
+                scrollBehavior: 'smooth',
+                gap: '16px',
+                padding: '8px',
+              }}
+            >
+              {courses.map((course) => (
+                <Card
+                  key={course.id}
+                  sx={{
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    p: 2,
+                    flex: '0 0 auto',
+                    width: '400px', // Fixed width for each card
+                  }}
+                >
+                  <CardContent>
+                    <img
+                      src={course.image}  // Cloudinary URL
+                      alt={course.title}
+                      style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 2 }}
+                    />
+                    <Typography variant="h6" gutterBottom>
+                      {course.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary"
+                    sx={{
+                      display: '-webkit-box',
+                      overflow: 'hidden',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 3,
+                      textOverflow: "ellipsis"
+                    }}>
+                      {course.description}
+                    </Typography>
+                    <Typography variant="h6" sx={{ mt: 1 }}>
+                      ${course.price}
+                    </Typography>
+                    <Button
+                      onClick={() => navigateToViewCourseDetails(course.course_id)}
+                      variant="contained"
+                      color="primary"
+                      sx={{ mt: 2 }}
+                    >
+                      View
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
 
                             <IconButton
                                 onClick={scrollRight}
