@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Typography, Card, CardContent, CardActions, Button, Avatar, Box, TextField } from '@mui/material';
+import Navbar from "./Navbar";
 
 const MessageFacilitator = () => {
   const [userId, setUserId] = useState(null);
@@ -80,27 +82,42 @@ const MessageFacilitator = () => {
 
   return (
     <>
-      <h1>Message Facilitator</h1>
-      <p>Welcome to 1:1 coaching. Share personal messages with a facilitator.</p>
+      <Navbar/>
+      <Box sx={{ margin: "1rem" }}>
+        <Typography variant="h4" fontWeight="bold">
+          Message Facilitator
+        </Typography>
+        <Typography variant="body1" fontWeight="bold">
+          Welcome to 1:1 coaching. Share personal messages with a facilitator.
+        </Typography>
+      </Box>
 
       {/* Message Input Form */}
       <form onSubmit={handleSendMessage}>
-        <label htmlFor="message">Message:</label>
-        <textarea
-          id="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows="3"
-          cols="50"
-        ></textarea>
-        <button type="submit">Send</button>
-      </form>
+        <Box sx={{ margin: "1rem" }}>
+          <TextField
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Share your thoughts..."
+            multiline
+            rows={3}
+            fullWidth
+            variant="outlined"
+            sx={{ marginBottom: "1rem" }}
+          />
+          <Button type="submit" variant="contained" color="primary">
+          Send
+          </Button>
+        </Box>
+      </form> 
 
-      <h2>Your Messages</h2>
-      <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: "10px" }}>
+      <Typography variant="h6" fontWeight="bold" sx={{ margin: "0 1rem 0 1rem" }}>
+          Your Messages
+        </Typography>
+      <Box sx={{ margin: "0 1rem 1rem", maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc", padding: "10px" }}>
         {conversationItems.length > 0 ? (
           conversationItems.map(item => (
-            <div 
+            <Card 
               key={item.id}
               style={{
                 textAlign: item.sender === "You" ? "left" : "right",
@@ -112,18 +129,20 @@ const MessageFacilitator = () => {
                 maxWidth: "70%"
               }}
             >
-              <p style={{ margin: "0" }}>
-                <strong>{item.sender}:</strong> {item.text}
-              </p>
-              <p style={{ fontSize: "12px", color: "gray", margin: "0" }}>
-                {item.timestamp.toLocaleString()}
-              </p>
-            </div>
+              <CardContent>
+                <Typography sx={{ margin: '0' }}>
+                  <strong>{item.sender}:</strong> {item.text}
+                </Typography>
+                <Typography sx={{ fontSize: "12px", color: "gray", margin: "0" }}>
+                  {item.timestamp.toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
           ))
         ) : (
           <p>No messages yet.</p>
         )}
-      </div>
+      </Box>
     </>
   );
 };
