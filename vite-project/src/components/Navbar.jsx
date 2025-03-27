@@ -160,7 +160,7 @@ const Navbar = () => {
                         }}
                     >
                         <img 
-                            src="../src/assets/icon.png" 
+                            src="/src/assets/icon.png" 
                             alt="Home" 
                             style={{ 
                                 width: 50, 
