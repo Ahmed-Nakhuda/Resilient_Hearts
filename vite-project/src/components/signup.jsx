@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { TextField, Button, Typography, Box, Paper } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 const SignUp = () => {
 
@@ -58,12 +60,35 @@ const SignUp = () => {
     }
   };
 
-
-
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Paper elevation={3} sx={{ maxWidth: 400, p: 3, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>Sign Up</Typography>
+    <>
+    {/* Sticky Navbar */}
+    <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
+      <Navbar />
+    </Box>
+      <Paper                elevation={3} 
+        sx={{ 
+            padding: 4, 
+            maxWidth: 400, 
+            margin: "auto", 
+            mt: 5,
+            borderRadius: 2, 
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%)' 
+        }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Typography 
+                variant="h4" 
+                sx={{ fontWeight: 'bold', color: '#1976d2', mb: 1 }}
+            >
+                Sign Up
+            </Typography>
+            <Typography 
+                variant="h6" 
+                sx={{ color: '#555', fontStyle: 'italic' }}
+            >
+                "Start Your Learning Journey"
+            </Typography>
+        </Box>
 
         {error && <Typography color="error">{error}</Typography>}
         {success && <Typography color="success.main">{success}</Typography>}
@@ -148,22 +173,34 @@ const SignUp = () => {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
+            fullWidth 
+            sx={{ 
+                mt: 2, 
+                py: 1.5, 
+                backgroundColor: '#1976d2',
+                '&:hover': { backgroundColor: '#115293' },
+                boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+                borderRadius: 1
+            }}
             onClick={handleSubmit}
           >
             Sign Up
           </Button>
         </form>
-        <Typography variant="body2" display="flex" alignItems="center" justifyContent="center" marginTop={2}>
-          <span>Already have an account?</span>
-          <Link to="/login" style={{ marginLeft: 8, }}>
-            Login
-          </Link>
-        </Typography>
+        <Box sx={{ mt: 3, textAlign: 'center' }}>
+          <Typography variant="body2" sx={{ color: '#666' }}>
+            Already have an account?{' '}
+            <Link 
+                to="/login" 
+                style={{ color: '#1976d2', textDecoration: 'none', fontWeight: 'bold' }}
+            >
+                Login
+            </Link>
+          </Typography>
+        </Box>
       </Paper>
-    </Box>
+    <Footer />
+    </>
   );
 };
 
