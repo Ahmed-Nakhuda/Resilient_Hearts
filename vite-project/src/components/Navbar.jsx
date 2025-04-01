@@ -183,34 +183,35 @@ const Navbar = () => {
                                 height: 50, 
                                 borderRadius: '50%', 
                                 border: '2px solid #fff',
-                                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+                                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+                                backgroundColor: "rgb(255, 255, 255)"
                             }} 
                         />
                     </IconButton>
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1.5 }}>
                         {!isLoggedIn && (
-                            <Button 
-                                onClick={() => handleNavigate('/login')} 
-                                sx={{ 
-                                    color: '#fff', 
-                                    fontWeight: 'bold', 
-                                    textTransform: 'none',
-                                    px: 2.5,
-                                    py: 1,
-                                    borderRadius: 10,
-                                    background: 'rgba(255, 255, 255, 0.15)',
-                                    backdropFilter: 'blur(5px)',
-                                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                                    '&:hover': { 
-                                        background: 'rgba(255, 255, 255, 0.25)', 
-                                        transform: 'scale(1.05)', 
-                                        animation: `${glow} 1.5s infinite`,
-                                        transition: 'all 0.3s'
-                                    }
-                                }}
-                            >
-                                Login
-                            </Button>
+                        <Button 
+                            onClick={() => handleNavigate('/login')} 
+                            sx={{ 
+                                color: '#fff', 
+                                fontWeight: 'bold', 
+                                textTransform: 'none',
+                                px: 2.5,
+                                py: 1,
+                                borderRadius: 10,
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                backdropFilter: 'blur(5px)',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                '&:hover': { 
+                                    background: 'rgba(255, 255, 255, 0.25)', 
+                                    transform: 'scale(1.05)', 
+                                    animation: `${glow} 1.5s infinite`,
+                                    transition: 'all 0.3s'
+                                }
+                            }}
+                        >
+                            Login
+                        </Button>
                         )}
                         <Button 
                             onClick={() => handleNavigate('/user-courses')} 
