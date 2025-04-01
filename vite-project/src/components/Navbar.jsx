@@ -83,11 +83,19 @@ const Navbar = () => {
     // Logout handler (adjust endpoint if needed)
     const handleLogout = async () => {
         try {
-            await axios.post("http://localhost:3001/logout", {}, { withCredentials: true });
-            navigate('/login');
+            const response = await fetch('http://localhost:3001/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                window.location.replace('/'); // Redirect to home page
+
+              } else {
+                console.error("Error logging out:");
+              }
         } catch (error) {
             console.error("Error logging out:", error);
-            navigate('/login');
         }
     };
 
@@ -102,9 +110,11 @@ const Navbar = () => {
                 <ListItem button onClick={() => handleNavigate('/')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                     <ListItemText primary="Home" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                 </ListItem>
-                <ListItem button onClick={() => handleNavigate('/login')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
-                    <ListItemText primary="Login" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
-                </ListItem>
+                {(!isEnrolled || !isAdmin || !isFacilitator) && (
+                    <ListItem button onClick={() => handleNavigate('/login')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
+                        <ListItemText primary="Login" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
+                    </ListItem>
+                )}
                 <ListItem button onClick={() => handleNavigate('/user-courses')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                     <ListItemText primary="My Courses" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                 </ListItem>

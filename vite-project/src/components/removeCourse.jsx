@@ -125,7 +125,7 @@ const RemoveCourse = () => {
                                 }}
                             >
                                 <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
-                                    <Box>
+                                    <Box sx={{ width: "70%" }}>
                                         <Typography 
                                             variant="h6" 
                                             sx={{ color: '#333', fontWeight: 'bold' }}
@@ -134,7 +134,14 @@ const RemoveCourse = () => {
                                         </Typography>
                                         <Typography 
                                             variant="body2" 
-                                            sx={{ color: '#666' }}
+                                            sx={{
+                                                color: '#666',
+                                                display: '-webkit-box',
+                                                overflow: 'hidden',
+                                                WebkitBoxOrient: 'vertical',
+                                                WebkitLineClamp: 2,
+                                                textOverflow: "ellipsis"
+                                            }}
                                         >
                                             {course.description}
                                         </Typography>

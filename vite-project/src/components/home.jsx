@@ -85,7 +85,7 @@ const Home = () => {
                                 onClick={scrollLeft}
                                 sx={{
                                     position: 'absolute',
-                                    left: -80,
+                                    left: -110,
                                     top: '50%',
                                     padding: '20px',
                                     transform: 'translateY(-50%)',
@@ -159,7 +159,7 @@ const Home = () => {
                                 onClick={scrollRight}
                                 sx={{
                                     position: 'absolute',
-                                    right: -80,
+                                    right: -110,
                                     top: '50%',
                                     padding: '20px',
                                     transform: 'translateY(-50%)',

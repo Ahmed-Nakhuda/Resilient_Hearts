@@ -122,6 +122,30 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Logout route
+app.post('/logout', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'No active session to logout from' });
+  }
+
+  try {
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        return res.status(500).json({ message: 'Error logging out' });
+      }
+      
+      // Clear the session cookie
+      res.clearCookie('connect.sid');
+      res.json({ message: 'Logout successful' });
+    });
+  } catch (err) {
+    console.error('Error during logout:', err);
+    res.status(500).json({ message: 'Error logging out', error: err.message });
+  }
+});
+
 // Check session route
 app.get("/check-session", (req, res) => {
   if (req.session.user) {
