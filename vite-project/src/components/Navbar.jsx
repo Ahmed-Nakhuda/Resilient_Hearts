@@ -39,6 +39,7 @@ const Navbar = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isFacilitator, setIsFacilitator] = useState(false);
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [profilePicture, setProfilePicture] = useState('/images/avatar.png');
     const [anchorEl, setAnchorEl] = useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,6 +51,7 @@ const Navbar = () => {
                 const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
                 console.log("Session Response:", response.data);
 
+                setIsLoggedIn(true);
                 if (response.data.role === "admin") setIsAdmin(true);
                 if (response.data.role === "enrolled") setIsEnrolled(true);
                 if (response.data.role === "facilitator") setIsFacilitator(true);
@@ -89,6 +91,10 @@ const Navbar = () => {
             });
 
             if (response.ok) {
+                setIsLoggedIn(false);
+                setIsAdmin(false);
+                setIsEnrolled(false);
+                setIsFacilitator(false);
                 window.location.replace('/'); // Redirect to home page
 
               } else {
@@ -110,7 +116,7 @@ const Navbar = () => {
                 <ListItem button onClick={() => handleNavigate('/')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                     <ListItemText primary="Home" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                 </ListItem>
-                {(!isEnrolled || !isAdmin || !isFacilitator) && (
+                {!isLoggedIn && (
                     <ListItem button onClick={() => handleNavigate('/login')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                         <ListItemText primary="Login" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
@@ -182,28 +188,30 @@ const Navbar = () => {
                         />
                     </IconButton>
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1.5 }}>
-                        <Button 
-                            onClick={() => handleNavigate('/login')} 
-                            sx={{ 
-                                color: '#fff', 
-                                fontWeight: 'bold', 
-                                textTransform: 'none',
-                                px: 2.5,
-                                py: 1,
-                                borderRadius: 10,
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                backdropFilter: 'blur(5px)',
-                                border: '1px solid rgba(255, 255, 255, 0.3)',
-                                '&:hover': { 
-                                    background: 'rgba(255, 255, 255, 0.25)', 
-                                    transform: 'scale(1.05)', 
-                                    animation: `${glow} 1.5s infinite`,
-                                    transition: 'all 0.3s'
-                                }
-                            }}
-                        >
-                            Login
-                        </Button>
+                        {!isLoggedIn && (
+                            <Button 
+                                onClick={() => handleNavigate('/login')} 
+                                sx={{ 
+                                    color: '#fff', 
+                                    fontWeight: 'bold', 
+                                    textTransform: 'none',
+                                    px: 2.5,
+                                    py: 1,
+                                    borderRadius: 10,
+                                    background: 'rgba(255, 255, 255, 0.15)',
+                                    backdropFilter: 'blur(5px)',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    '&:hover': { 
+                                        background: 'rgba(255, 255, 255, 0.25)', 
+                                        transform: 'scale(1.05)', 
+                                        animation: `${glow} 1.5s infinite`,
+                                        transition: 'all 0.3s'
+                                    }
+                                }}
+                            >
+                                Login
+                            </Button>
+                        )}
                         <Button 
                             onClick={() => handleNavigate('/user-courses')} 
                             sx={{ 
