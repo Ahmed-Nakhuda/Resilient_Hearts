@@ -70,8 +70,6 @@ db.connect()
   .catch((err) => console.error('Error connecting to database:', err));
 
 
-
-
 // Route to create a user
 app.post('/create-user', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, age, specialNeeds, hopeToLearn, role = 'user' } = req.body;
@@ -165,17 +163,17 @@ app.get('/user', (req, res) => {
 
 // Route to upload a course with an image using Cloudinary
 app.post('/upload-course', upload.single('image'), async (req, res) => {
-  const { title, description, price, quote, duration } = req.body;
+  const { title, description, price } = req.body;
   const image = req.file;
 
-  if (!title || !description || !price || !image || !quote || !duration) {
+  if (!title || !description || !price || !image) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
     const [result] = await db.execute(
-      'INSERT INTO courses (title, description, price, image, quote, duration) VALUES (?, ?, ?, ?, ?, ?)',
-      [title, description, price, image.path, quote, duration]
+      'INSERT INTO courses (title, description, price, image) VALUES (?, ?, ?, ?)',
+      [title, description, price, image.path]
     );
     res.status(201).json({ message: 'Course uploaded successfully', courseId: result.insertId });
   } catch (err) {
@@ -183,6 +181,7 @@ app.post('/upload-course', upload.single('image'), async (req, res) => {
     console.log(err);
   }
 });
+
 
 // Route to fetch all courses
 app.get('/view-course', async (req, res) => {

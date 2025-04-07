@@ -139,7 +139,7 @@ const Navbar = () => {
                         <ListItemText primary="My Community" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
                 )}
-                {(isEnrolled || isAdmin) && (
+                {(isEnrolled) && (
                     <ListItem button onClick={() => handleNavigate('/message-facilitator')} sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.2)', animation: `${glow} 1.5s infinite` } }}>
                         <ListItemText primary="Message Facilitator" sx={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)' }} />
                     </ListItem>
@@ -317,7 +317,7 @@ const Navbar = () => {
                                 My Community
                             </Button>
                         )}
-                        {(isEnrolled || isAdmin) && (
+                        {(isEnrolled) && (
                             <Button 
                                 onClick={() => handleNavigate('/message-facilitator')} 
                                 sx={{ 
