@@ -163,17 +163,17 @@ app.get('/user', (req, res) => {
 
 // Route to upload a course with an image using Cloudinary
 app.post('/upload-course', upload.single('image'), async (req, res) => {
-  const { title, description, price } = req.body;
+  const { title, description, price, quote, duration } = req.body;
   const image = req.file;
 
-  if (!title || !description || !price || !image) {
+  if (!title || !description || !price || !image || !quote || !duration) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
     const [result] = await db.execute(
-      'INSERT INTO courses (title, description, price, image) VALUES (?, ?, ?, ?)',
-      [title, description, price, image.path]
+      'INSERT INTO courses (title, description, price, image, quote, duration) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, description, price, image.path, quote, duration]
     );
     res.status(201).json({ message: 'Course uploaded successfully', courseId: result.insertId });
   } catch (err) {

@@ -7,7 +7,9 @@ const UploadCourse = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
-    const [image, setImage] = useState(null); // new image state
+    const [duration, setDuration] = useState('');
+    const [image, setImage] = useState(null);
+    const [quote, setQuote] = useState('');
     const [contentFiles, setContentFiles] = useState([]);
     const [contentTypes, setContentTypes] = useState([]);
     const [stepNumbers, setStepNumbers] = useState([]);
@@ -26,6 +28,8 @@ const UploadCourse = () => {
         formData.append("description", description);
         formData.append("price", price);
         formData.append("image", image); // include the image file
+        formData.append("duration", duration); // include the duration
+        formData.append("quote", quote); // include the quote
 
         try {
             const response = await axios.post(
@@ -124,6 +128,31 @@ const UploadCourse = () => {
                             rows={4}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                            required
+                        />
+                    </Box>
+
+                    <Box mb={2}>
+                        <TextField
+                            fullWidth
+                            label="Quote"
+                            variant="outlined"
+                            multiline
+                            rows={4}
+                            value={quote}
+                            onChange={(e) => setQuote(e.target.value)}
+                            required
+                        />
+                    </Box>
+
+                    <Box mb={2}>
+                        <TextField
+                            fullWidth
+                            label="Duration"
+                            variant="outlined"
+                            type="number"
+                            value={duration}
+                            onChange={(e) => setDuration(e.target.value)}
                             required
                         />
                     </Box>
