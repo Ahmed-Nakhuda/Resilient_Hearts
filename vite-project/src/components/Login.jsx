@@ -25,7 +25,7 @@ const Login = () => {
         setSuccess("");
 
         try {
-            const response = await axios.post("http://localhost:3001/login", formData, { withCredentials: true });
+            const response = await axios.post("http://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/login", formData, { withCredentials: true });
             setSuccess(response.data.message);
 
             axios.get("http://localhost:3001/check-session", { withCredentials: true })
