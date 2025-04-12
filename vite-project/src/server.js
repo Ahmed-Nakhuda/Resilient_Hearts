@@ -68,6 +68,9 @@ const db = await mysql.createConnection({
   }
 });
 
+db.connect()
+  .then(() => console.log('Connected to MySQL database'))
+  .catch((err) => console.error('Error connecting to database:', err));
 
 // Route to create a user
 app.post('/create-user', async (req, res) => {
