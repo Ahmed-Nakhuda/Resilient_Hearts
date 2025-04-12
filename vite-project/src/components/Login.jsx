@@ -28,7 +28,7 @@ const Login = () => {
             const response = await axios.post("http://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/login", formData, { withCredentials: true });
             setSuccess(response.data.message);
 
-            axios.get("http://localhost:3001/check-session", { withCredentials: true })
+            axios.get("http://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true })
                 .then((res) => {
                     if (res.data.role === "admin") {
                         navigate("/");
