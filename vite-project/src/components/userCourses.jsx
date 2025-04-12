@@ -14,7 +14,7 @@ const UserCourses = () => {
         const fetchUserCourses = async () => {
             try {
                 console.log("Fetching user courses...");
-                const response = await axios.get("http://localhost:3001/user-courses", {
+                const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/user-courses", {
                     withCredentials: true
                 });
                 console.log("User courses:", response.data);

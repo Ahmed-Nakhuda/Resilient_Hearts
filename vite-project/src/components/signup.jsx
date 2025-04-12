@@ -52,7 +52,7 @@ const SignUp = () => {
 
     try {
       // Send form data to the backend
-      const response = await axios.post("http://localhost:3001/create-user", formData);
+      const response = await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/create-user", formData);
       setSuccess(response.data.message);
       navigate("/home");
     } catch (err) {

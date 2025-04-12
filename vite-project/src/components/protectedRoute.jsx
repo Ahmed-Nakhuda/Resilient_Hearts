@@ -8,7 +8,7 @@ const ProtectedRoute = ({ element, allowedRoles }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/check-session", { withCredentials: true })
+      .get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true })
       .then(response => {
         setRole(response.data.role);
       })

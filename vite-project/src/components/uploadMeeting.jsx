@@ -16,7 +16,7 @@ const UploadMeeting = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.post('http://localhost:3001/upload-meeting', {
+            const response = await axios.post('https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/upload-meeting', {
                 title,
                 link,
                 description,

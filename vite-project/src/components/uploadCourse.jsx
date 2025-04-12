@@ -33,7 +33,7 @@ const UploadCourse = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:3001/upload-course",
+                "https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/upload-course",
                 formData,
                 {
                     withCredentials: true,
@@ -61,7 +61,7 @@ const UploadCourse = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:3001/upload-content",
+                "https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/upload-content",
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },

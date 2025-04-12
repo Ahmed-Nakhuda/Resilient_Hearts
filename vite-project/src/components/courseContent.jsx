@@ -17,7 +17,7 @@ const CourseContent = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/view-course-content/${courseId}`);
+                const response = await axios.get(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/${courseId}`);
                 console.log('API Response:', response.data);
 
                 if (response.data && response.data.length > 0) {

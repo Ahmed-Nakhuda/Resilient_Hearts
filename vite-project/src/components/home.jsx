@@ -32,7 +32,7 @@ const Home = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch('http://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/view-course');
+                const response = await fetch('https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/view-course');
                 const data = await response.json();
                 setCourses(data);
             } catch (err) {

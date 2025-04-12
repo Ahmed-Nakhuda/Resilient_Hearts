@@ -30,7 +30,7 @@ const RemoveCourse = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch('http://localhost:3001/view-course');
+                const response = await fetch('https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/view-course');
                 const data = await response.json();
                 setCourses(data);
             } catch (err) {
@@ -44,7 +44,7 @@ const RemoveCourse = () => {
 
     const handleRemoveCourse = async (courseId) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/delete-course/${courseId}`, {
+            const response = await axios.delete(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/delete-course/${courseId}`, {
                 withCredentials: true
             });
             if (response.status === 200) {
