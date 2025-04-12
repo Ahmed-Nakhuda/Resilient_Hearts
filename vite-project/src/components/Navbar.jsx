@@ -56,11 +56,11 @@ const Navbar = () => {
                 if (response.data.role === "enrolled") setIsEnrolled(true);
                 if (response.data.role === "facilitator") setIsFacilitator(true);
 
-                // Uncomment and adjust this section if profile picture fetching is implemented
-                // const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
-                // if (profileResponse.data.profile_picture) {
-                //     setProfilePicture(profileResponse.data.profile_picture);
-                // }
+                // Fetch user profile picture
+                const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
+                if (profileResponse.data.profile_picture) {
+                    setProfilePicture(profileResponse.data.profile_picture);
+                }
             } catch (error) {
                 console.error("Error fetching user role or profile:", error);
             }
