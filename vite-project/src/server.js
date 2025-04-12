@@ -47,7 +47,6 @@ const storage = new CloudinaryStorage({
 });
 
 
-
 const upload = multer({ storage });
 
 app.use(session({
@@ -57,17 +56,17 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-// MySQL database connection 
+
+// Azure MySQL database connection 
 const db = await mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  ssl: {
+    rejectUnauthorized: true
+  }
 });
-
-db.connect()
-  .then(() => console.log('Connected to MySQL database'))
-  .catch((err) => console.error('Error connecting to database:', err));
 
 
 // Route to create a user
@@ -97,6 +96,7 @@ app.post('/create-user', async (req, res) => {
   }
 });
 
+
 // Login route
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -119,6 +119,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Error logging in', error: err.message });
   }
 });
+
 
 // Logout route
 app.post('/logout', async (req, res) => {
@@ -144,6 +145,7 @@ app.post('/logout', async (req, res) => {
   }
 });
 
+
 // Check session route
 app.get("/check-session", (req, res) => {
   if (req.session.user) {
@@ -153,6 +155,7 @@ app.get("/check-session", (req, res) => {
   }
 });
 
+
 // Get user details
 app.get('/user', (req, res) => {
   if (!req.session.user) {
@@ -160,6 +163,7 @@ app.get('/user', (req, res) => {
   }
   res.json(req.session.user);
 });
+
 
 // Route to upload a course with an image using Cloudinary
 app.post('/upload-course', upload.single('image'), async (req, res) => {
@@ -194,6 +198,7 @@ app.get('/view-course', async (req, res) => {
   }
 });
 
+
 // Route to fetch course by ID
 app.get('/view-course/:courseId', async (req, res) => {
   const { courseId } = req.params;
@@ -205,6 +210,7 @@ app.get('/view-course/:courseId', async (req, res) => {
     console.log(err);
   }
 });
+
 
 // Route to fetch course content by course ID
 app.get('/view-course-content/:courseId', async (req, res) => {
@@ -221,6 +227,7 @@ app.get('/view-course-content/:courseId', async (req, res) => {
   }
 });
 
+
 // Payment page for a specific course
 app.get('/payment/:courseId', async (req, res) => {
   const { courseId } = req.params;
@@ -236,6 +243,8 @@ app.get('/payment/:courseId', async (req, res) => {
   }
 });
 
+
+// Route to upload course content
 app.post('/upload-content', upload.array('content[]'), (req, res) => {
   console.log("Incoming request body:", JSON.stringify(req.body, null, 2));
   console.log("Uploaded files:", JSON.stringify(req.files, null, 2));
@@ -272,7 +281,6 @@ app.post('/upload-content', upload.array('content[]'), (req, res) => {
 });
 
 
-
 // Route to enroll a user in a course
 app.post("/enroll", async (req, res) => {
   const { user_id, course_id } = req.body;
@@ -298,6 +306,7 @@ app.post("/enroll", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
+
 
 // Route to fetch courses for a user
 app.get("/user-courses", async (req, res) => {
@@ -346,7 +355,6 @@ app.delete("/remove-course/:userCourseId", async (req, res) => {
 });
 
 
-
 // Remove a course from the database
 app.delete("/delete-course/:courseId", async (req, res) => {
   const { courseId } = req.params;
@@ -371,8 +379,6 @@ app.delete("/delete-course/:courseId", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
-
 
 
 // Upload user profile picture
@@ -418,6 +424,7 @@ app.get("/user/:user_id", async (req, res) => {
 });
 
 
+// route to create a post in my community page
 app.post("/create-post", async (req, res) => {
   const { user_id, post_description } = req.body;
 
@@ -439,6 +446,7 @@ app.post("/create-post", async (req, res) => {
 });
 
 
+// route to fetch all posts
 app.get("/posts", async (req, res) => {
   try {
       const [posts] = await db.execute(`
@@ -456,7 +464,7 @@ app.get("/posts", async (req, res) => {
   }
 });
 
-
+// route to like a post 
 app.post("/like-post", async (req, res) => {
   const { user_id, post_id } = req.body;
 
@@ -495,6 +503,7 @@ app.post("/like-post", async (req, res) => {
 });
 
 
+// route to get liked posts
 app.get("/liked-posts/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
@@ -556,7 +565,6 @@ app.get("/replies/:post_id", async (req, res) => {
 });
 
 
-
 // send message to facilitator
 app.post("/send-message", async (req, res) => {
   const { sender_id, message_text } = req.body;
@@ -600,27 +608,6 @@ app.get("/messages/:userId", async (req, res) => {
 });
 
 
-
-// send reply to user as facilitator
-// app.post("/send-reply", async (req, res) => {
-//   const { message_id, sender_id, reply_text } = req.body;
-
-//   if (!message_id || !sender_id || !reply_text.trim()) {
-//     return res.status(400).json({ error: "All fields are required" });
-//   }
-
-//   try {
-//     await db.execute(
-//       "INSERT INTO replies (message_id, sender_id, reply_text) VALUES (?, ?, ?)",
-//       [message_id, sender_id, reply_text]
-//     );
-//     res.status(201).json({ message: "Reply sent successfully" });
-//   } catch (error) {
-//     console.error("Error sending reply:", error);
-//     res.status(500).json({ error: "Database error" });
-//   }
-// });
-
 // Endpoint to send reply to a user as facilitator
 app.post("/send-reply", async (req, res) => {
   const { message_id, sender_id, reply_text } = req.body;
@@ -642,7 +629,6 @@ app.post("/send-reply", async (req, res) => {
 });
 
 
-
 // fetch all messages
 app.get("/all-messages", async (req, res) => {
   try {
@@ -660,7 +646,6 @@ app.get("/all-messages", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
 
 
 // display reply from facilitator to user
@@ -684,31 +669,6 @@ app.get("/replies/:userId", async (req, res) => {
   }
 });
 
-
-// Endpoint to fetch all messages and replies for a given user (userId)
-// app.get("/conversation/:userId", async (req, res) => {
-//   const { userId } = req.params; // Extract userId from the URL parameters
-
-//   try {
-//     // Query to fetch messages and replies for the given userId
-//     const [messages] = await db.execute(`
-//       SELECT m.message_id, m.message_text, m.sent_at, 
-//              r.reply_id, r.reply_text, r.sent_at AS reply_sent_at,
-//              u.first_name, u.last_name
-//       FROM messages m
-//       LEFT JOIN replies r ON m.message_id = r.message_id
-//       JOIN users u ON m.sender_id = u.user_id
-//       WHERE m.sender_id = ?
-//       ORDER BY m.sent_at ASC, r.sent_at ASC
-//     `, [userId]);
-
-//     // Send the messages with replies as the response
-//     res.json(messages);
-//   } catch (err) {
-//     console.error("Error fetching conversation:", err);
-//     res.status(500).json({ error: "Database error" });
-//   }
-// });
 
 // Endpoint to fetch all messages (with embedded replies) for a given user (userId)
 app.get("/conversation/:userId", async (req, res) => {
@@ -776,7 +736,6 @@ app.get('/get-meetings', async (req, res) => {
     res.status(500).json({ message: 'Server error' })
   }
 })
-
 
 
 // Start server

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import Footer from './Footer'; // Added Footer import
+import Footer from './Footer'; 
 import { 
     Typography, 
     Box, 
@@ -135,8 +135,6 @@ const FacilitatorMessages = () => {
                     </Box>
                 </Paper>
             </Container>
-
-            {/* Footer Added */}
             <Footer />
         </>
     );
