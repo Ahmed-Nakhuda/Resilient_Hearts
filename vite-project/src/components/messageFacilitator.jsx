@@ -31,7 +31,7 @@ const MessageFacilitator = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/messages/${userId}`);
+      const response = await axios.get(`http://localhost:3001/conversation/${userId}`);
       setMessages(response.data);
       console.log("Messages:", response.data);
     } catch (error) {
@@ -125,7 +125,7 @@ const MessageFacilitator = () => {
                 padding: "8px",
                 borderRadius: "5px",
                 background: item.sender === "You" ? "#cce5ff" : "#f8d7da",
-                display: "block", // Ensures each message takes its own line
+                display: "block",
                 maxWidth: "70%"
               }}
             >
