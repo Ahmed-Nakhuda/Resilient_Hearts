@@ -45,7 +45,7 @@ const Home = () => {
     }, []);
 
     const navigateToViewCourseDetails = (courseId) => {
-        navigate(`/stress-management-and-healthy-coping/${courseId}`);
+        navigate(`/payment/${courseId}`);
     };
 
     const scrollLeft = () => {
