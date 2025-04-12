@@ -14,9 +14,12 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://resilient-hearts-qqz4glnlf-ahmed-nakhudas-projects.vercel.app,
-  credentials: true
+  origin: "https://resilient-hearts.vercel.app",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
 }));
+
 
 
 // Configure Cloudinary
