@@ -21,7 +21,7 @@ const FacilitatorMessages = () => {
 
     const fetchMessages = async () => {
         try {
-            const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/all-messages");
+            const response = await axios.get("http://localhost:3001/all-messages");
             console.log("Fetched messages:", response.data);
             setMessages(response.data);
         } catch (error) {

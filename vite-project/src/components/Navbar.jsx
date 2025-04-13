@@ -48,7 +48,7 @@ const Navbar = () => {
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
-                const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true });
+                const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
                 console.log("Session Response:", response.data);
 
                 setIsLoggedIn(true);
@@ -57,7 +57,7 @@ const Navbar = () => {
                 if (response.data.role === "facilitator") setIsFacilitator(true);
 
                 // Fetch user profile picture
-                const profileResponse = await axios.get(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/user/${response.data.user_id}`, { withCredentials: true });
+                const profileResponse = await axios.get(`http://localhost:3001/user/${response.data.user_id}`, { withCredentials: true });
                 if (profileResponse.data.profile_picture) {
                     setProfilePicture(profileResponse.data.profile_picture);
                 }
@@ -85,7 +85,7 @@ const Navbar = () => {
     // Logout handler (adjust endpoint if needed)
     const handleLogout = async () => {
         try {
-            const response = await fetch('https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/logout', {
+            const response = await fetch('http://localhost:3001/logout', {
                 method: 'POST',
                 credentials: 'include',
             });

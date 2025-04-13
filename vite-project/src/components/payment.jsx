@@ -35,7 +35,7 @@ const Payment = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true });
+                const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
                 setUserId(response.data.user_id);
             } catch (err) {
                 console.error("Error fetching user:", err);
@@ -50,7 +50,7 @@ const Payment = () => {
         const fetchCourseDetails = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/view-course/${courseId}`);
+                const response = await axios.get(`http://localhost:3001/view-course/${courseId}`);
                 console.log('API Response:', response.data);
                 if (response.data && response.data.length > 0) {
                     setCourseContent(response.data);
@@ -79,7 +79,7 @@ const Payment = () => {
             console.log("Sending enrollment request...");
             console.log("User ID:", userId);
             console.log("Course ID:", courseId);
-            const response = await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/enroll", {
+            const response = await axios.post("http://localhost:3001/enroll", {
                 user_id: userId,
                 course_id: courseId
             });

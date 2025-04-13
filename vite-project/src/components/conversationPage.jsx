@@ -27,7 +27,7 @@ const ConversationPage = () => {
 
     const fetchSession = async () => {
         try {
-            const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true });
+            const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
             setFacilitatorId(response.data.user_id);
         } catch (error) {
             console.error("Error fetching session:", error);
@@ -36,7 +36,7 @@ const ConversationPage = () => {
 
     const fetchConversation = async () => {
         try {
-            const response = await axios.get(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/conversation/${userId}`);
+            const response = await axios.get(`http://localhost:3001/conversation/${userId}`);
             setMessages(response.data);
         } catch (error) {
             console.error("Error fetching conversation:", error);
@@ -51,7 +51,7 @@ const ConversationPage = () => {
         if (!facilitatorId || !replyText.trim()) return;
 
         try {
-            await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/send-reply", {
+            await axios.post("http://localhost:3001/send-reply", {
                 message_id: messages[messages.length - 1].message_id,
                 sender_id: facilitatorId,
                 reply_text: replyText,

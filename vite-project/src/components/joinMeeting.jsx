@@ -10,7 +10,7 @@ const JoinMeeting = () => {
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await axios.get('https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/get-meetings')
+        const response = await axios.get('http://localhost:3001/get-meetings')
         setMeetings(response.data)
       } catch (error) {
         console.error('Error fetching meetings:', error)

@@ -25,7 +25,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserId = async () => {
             try {
-                const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true });
+                const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
                 setUserId(response.data.user_id);
             } catch (err) {
                 console.error("Session error:", err);
@@ -63,7 +63,7 @@ const UserProfile = () => {
         formData.append("user_id", userId);
 
         try {
-            const response = await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/upload-profile-picture", formData, {
+            const response = await axios.post("http://localhost:3001/upload-profile-picture", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             console.log("Upload successful:", response.data);

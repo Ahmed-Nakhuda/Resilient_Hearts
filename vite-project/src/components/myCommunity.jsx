@@ -21,7 +21,7 @@ const Post = () => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/check-session", { withCredentials: true });
+        const response = await axios.get("http://localhost:3001/check-session", { withCredentials: true });
         setUserId(response.data.user_id);
       } catch (error) {
         console.error("Error fetching session:", error);
@@ -35,7 +35,7 @@ const Post = () => {
   // Fetch posts from backend
   const fetchPosts = async () => {
     try {
-      const response = await axios.get("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/posts");
+      const response = await axios.get("http://localhost:3001/posts");
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -47,7 +47,7 @@ const Post = () => {
     if (likedPosts.has(postId)) return; // Prevent duplicate likes
 
     try {
-      await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/like-post", { user_id: userId, post_id: postId });
+      await axios.post("http://localhost:3001/like-post", { user_id: userId, post_id: postId });
 
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -67,7 +67,7 @@ const Post = () => {
     if (!postDescription.trim() || !userId) return;
 
     try {
-      await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/create-post", {
+      await axios.post("http://localhost:3001/create-post", {
         user_id: userId,
         post_description: postDescription,
       });
@@ -82,7 +82,7 @@ const Post = () => {
   // Fetch replies for a given post
   const getReplies = async (postId) => {
     try {
-      const response = await axios.get(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/replies/${postId}`);
+      const response = await axios.get(`http://localhost:3001/replies/${postId}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching replies:", error);
@@ -122,7 +122,7 @@ const Post = () => {
     if (!text?.trim() || !userId) return;
 
     try {
-      await axios.post("https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/reply-post", {
+      await axios.post("http://localhost:3001/reply-post", {
         user_id: userId,
         post_id: postId,
         reply_description: text,

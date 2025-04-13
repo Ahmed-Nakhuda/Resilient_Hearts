@@ -34,7 +34,7 @@ const StressManagement = () => {
     useEffect(() => {
     const fetchCourses = async () => {
         try {
-        const response = await fetch(`https://resilient-hearts-api-hceyatazggfahhcp.canadacentral-01.azurewebsites.net/${courseId}`);
+        const response = await fetch(`http://localhost:3001/${courseId}`);
         const data = await response.json();
         setCourses(data);
         } catch (err) {
