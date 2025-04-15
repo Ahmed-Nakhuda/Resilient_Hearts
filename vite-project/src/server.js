@@ -600,8 +600,7 @@ app.get("/messages/:userId", async (req, res) => {
 });
 
 
-
-// send reply to user as facilitator
+// Endpoint to send reply to a user as facilitator
 app.post("/send-reply", async (req, res) => {
   const { message_id, sender_id, reply_text } = req.body;
 
@@ -611,12 +610,42 @@ app.post("/send-reply", async (req, res) => {
 
   try {
     await db.execute(
-      "INSERT INTO replies (message_id, sender_id, reply_text) VALUES (?, ?, ?)",
-      [message_id, sender_id, reply_text]
+      "UPDATE messages SET reply_text = ?, reply_sent_at = NOW() WHERE message_id = ?",
+      [reply_text, message_id]
     );
-    res.status(201).json({ message: "Reply sent successfully" });
+    res.status(200).json({ message: "Reply sent successfully" });
   } catch (error) {
     console.error("Error sending reply:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+
+// Endpoint to fetch all messages (with embedded replies) for a given user (userId)
+app.get("/conversation/:userId", async (req, res) => {
+  const { userId } = req.params; // Extract userId from the URL parameters
+
+  try {
+    // Updated query: select reply info directly from the messages table
+    const [messages] = await db.execute(`
+      SELECT m.message_id, 
+             m.message_text, 
+             m.sent_at, 
+             m.reply_text,
+             m.reply_sent_at,
+             u.first_name, 
+             u.last_name
+      FROM messages m
+      JOIN users u ON m.sender_id = u.user_id
+      WHERE m.sender_id = ?
+      ORDER BY m.sent_at ASC;
+    `, [userId]);
+
+    // Send the messages with embedded replies as the response
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching conversation:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
